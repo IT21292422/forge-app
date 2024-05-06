@@ -11,5 +11,8 @@
     "source.fixAll.eslint": "explicit",
     "source.fixAll": "always",
     "source.organizeImports": "explicit"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   }
 }
