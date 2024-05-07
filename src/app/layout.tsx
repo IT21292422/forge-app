@@ -1,6 +1,9 @@
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Navbar from "./components/Navbar";
 import "./globals.css";
+import { ReactQueryClientProvider } from "./util/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +18,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ReactQueryClientProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <Navbar />
+          <main className="my-5 bg-base-100">{children}</main>
+          <ReactQueryDevtools initialIsOpen={true} />
+        </body>
+      </html>
+    </ReactQueryClientProvider>
   );
 }

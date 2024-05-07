@@ -1,6 +1,5 @@
 import AllCourseCard from "../components/learner/AllCourseCard"
 import LearnerHeader from "../components/learner/LearnerHeader"
-import Navbar from "../components/learner/Navbar"
 
 export default function Home() {
 
@@ -101,7 +100,6 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
       <LearnerHeader />
       <div className="flex w-screen bg-main justify-center p-16 mt-10">
         <label className="input input-bordered flex items-center gap-2 w-[300px] md:w-[80%]">
