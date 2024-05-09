@@ -1,6 +1,33 @@
-import AllCourseCard from "@/app/components/learner/AllCourseCard"
+import MyCourseCard from '@/app/components/learner/MyCourseCard';
 
-export default function ExploreCourse() {
+export default function MyCourse() {
+
+    const user = {
+        _id: "01",
+        enrolledCourse: ["3", "4"]
+    }
+
+    const progress = [
+        {
+            courseId: "3",
+            students: [
+                {
+                    learnerId: "01",
+                    progress: "50"
+                }
+            ]
+        },
+        {
+            courseId: "4",
+            students: [
+                {
+                    learnerId: "01",
+                    progress: "40"
+                }
+            ]
+        },
+    ]
+
     const courses = [
         {
             courseId: "1",
@@ -72,7 +99,7 @@ export default function ExploreCourse() {
 
         },
         {
-            courseId: "3",
+            courseId: "4",
             courseTitle: "C Programming For beginners",
             publishedDate: "12/2/2024",
             price: 200,
@@ -94,15 +121,24 @@ export default function ExploreCourse() {
         }
     ]
 
-    const renderCourses = courses.map((course, index) => {
+    const enrolledCourses = courses.filter(course => user.enrolledCourse.includes(course.courseId));
+
+    const renderCourses = enrolledCourses.map((course, index) => {
+
+        const courseProgress = progress.find(item => {
+            return (
+                item.courseId == course.courseId &&
+                item.students.some(student => student.learnerId === user._id)
+            )
+        })
         return (
-            <AllCourseCard key={index} course={course} />
+            <MyCourseCard key={index} course={course} courseProgress={courseProgress} />
         )
     })
     return (
         <>
             <div className="bg-main flex flex-col">
-                <h1 className="text-4xl text-center text-white pt-10 font-serif">Explore our range of courses</h1>
+                <h1 className="text-4xl text-center text-white pt-10 font-serif">Enrolled Courses</h1>
                 <div className="flex w-screen justify-center px-16 pb-16 pt-10">
                     <label className="input input-bordered flex items-center gap-2 w-[300px] md:w-[80%]">
                         <input type="text" className="grow truncate" placeholder="What Do You Want To Learn?" />
