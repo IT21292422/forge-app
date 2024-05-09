@@ -1,5 +1,11 @@
-import Link from 'next/link';
-export default function AllCourseCard({ course }: any) {
+
+export default function MyCourseCard({ course, courseProgress }: any) {
+
+    var newProgress = 0
+    console.log(courseProgress)
+    if (courseProgress) {
+        newProgress = courseProgress.students[0].progress
+    }
 
     const renderTags = course.tags.slice(0, 5).map((tags: any) => {
         return (
@@ -21,9 +27,15 @@ export default function AllCourseCard({ course }: any) {
                 </div>
                 <div className="flex justify-between items-center mt-auto mb-2">
                     <div>
-                        <p className="text-2xl font-bold text-red-500">$<span>{course.price}</span></p>
+                        <div
+                            className="radial-progress text-primary"
+                            style={{ '--value': `${newProgress}`, "--size": "4rem" } as any}
+                            role="progressbar"
+                        >
+                            {newProgress}%
+                        </div>
                     </div>
-                    <button className="btn btn-primary"><Link href="/learner/course/[courseId]" as={`/learner/course/${course.courseId}`}>Enroll Now</Link></button>
+                    <button className="btn btn-primary">View</button>
                 </div>
             </div>
         </div>
