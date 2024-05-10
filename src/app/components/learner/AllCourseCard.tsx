@@ -23,7 +23,7 @@ export default function AllCourseCard({ course }: any) {
                     <div>
                         <p className="text-2xl font-bold text-red-500">$<span>{course.price}</span></p>
                     </div>
-                    <button className="btn btn-primary"><Link href="/learner/course/[courseId]" as={`/learner/course/${course.courseId}`}>Enroll Now</Link></button>
+                    <button className="btn btn-primary"><Link href="/learner/enrollcourse/[courseId]" as={`/learner/enrollcourse/${course.courseId}`}>Enroll Now</Link></button>
                 </div>
             </div>
         </div>

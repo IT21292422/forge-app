@@ -1,3 +1,4 @@
+import Link from "next/link"
 
 export default function MyCourseCard({ course, courseProgress }: any) {
 
@@ -35,7 +36,7 @@ export default function MyCourseCard({ course, courseProgress }: any) {
                             {newProgress}%
                         </div>
                     </div>
-                    <button className="btn btn-primary">View</button>
+                    <button className="btn btn-primary"><Link href="/learner/course/[courseId]" as={`/learner/course/${course.courseId}`}>View</Link></button>
                 </div>
             </div>
         </div>
