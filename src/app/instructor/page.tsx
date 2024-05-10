@@ -1,3 +1,5 @@
+'use client'
+
 import CourseList from "../components/instructor/CourseList";
 import Stats from "../components/instructor/Stats";
 
@@ -12,7 +14,7 @@ export default function Page() {
       <button className="btn btn-info w-max my-8">+ New Course</button>
 
       {/* approved courses */}
-      <div className="min-w-full mt-40">
+      <div className="min-w-full mt-32">
         <CourseList title={'Approved courses'} isApproved={true} />
       </div>
 

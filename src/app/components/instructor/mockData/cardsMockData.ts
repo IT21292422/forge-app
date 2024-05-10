@@ -15,7 +15,7 @@ export const cardsMockData = [
     category: "Web Dev.",
     tags: ["HTML", "CSS", "JavaScript"],
     price: 60,
-    isApproved: false,
+    isApproved: true,
   },
   {
     courseTitle: "Course three",
