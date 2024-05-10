@@ -5,6 +5,7 @@ import { useState } from 'react'; // Import useState hook
 export default function Content() {
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null); // State to store uploaded image URL
     const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string | null>(null); // State to store uploaded video URL
+    const [uploadedPdfUrl, setUploadedPdfUrl] = useState<string | null>(null); // State to store uploaded PDF URL
 
     const handleImageUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
         if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
@@ -59,6 +60,30 @@ export default function Content() {
                     <div>Uploaded Video URL: {uploadedVideoUrl}</div>
                 </div>
             )}
+            <div>
+                <div>View and Upload content</div>
+                <div>
+                    <CldUploadWidget
+                        resourceType="raw" // Set resourceType to "raw" for PDF files
+                        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PERSIST} // Change this to your PDF upload preset
+                        onSuccess={(result) => {
+                            // When upload succeeds, update state with the uploaded PDF URL
+                            setUploadedPdfUrl(result.info.secure_url);
+                        }}
+                    >
+                        {({ open }) => {
+                            return <button className='btn btn-primary' onClick={() => open()}>Open PDF Uploader</button>
+                        }}
+                    </CldUploadWidget>
+                </div>
+                {/* Display the uploaded PDF URL */}
+                {uploadedPdfUrl && (
+                    <div>
+                        <div>Uploaded PDF URL: {uploadedPdfUrl}</div>
+                        <a href={uploadedPdfUrl}>Download</a>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
