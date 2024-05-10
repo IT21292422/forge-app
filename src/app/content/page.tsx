@@ -19,6 +19,12 @@ export default function Content() {
         }
     };
 
+    const handlePDFUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
+        if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
+            setUploadedPdfUrl(result.info.secure_url);
+        }
+    };
+
     return (
         <div className="grid justify-items-center">
             <div>View and Upload content</div>
@@ -64,12 +70,8 @@ export default function Content() {
                 <div>View and Upload content</div>
                 <div>
                     <CldUploadWidget
-                        resourceType="raw" // Set resourceType to "raw" for PDF files
                         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PERSIST} // Change this to your PDF upload preset
-                        onSuccess={(result) => {
-                            // When upload succeeds, update state with the uploaded PDF URL
-                            setUploadedPdfUrl(result.info.secure_url);
-                        }}
+                        onSuccess={handlePDFUploadSuccess}
                     >
                         {({ open }) => {
                             return <button className='btn btn-primary' onClick={() => open()}>Open PDF Uploader</button>
