@@ -12,7 +12,7 @@ interface Window {
 
 interface PaymentObject {
   sandbox: boolean;
-  merchant_id: string;
+  merchant_id: string | undefined;
   return_url?: string | undefined;
   cancel_url?: string | undefined;
   notify_url: string;
