@@ -4,6 +4,15 @@ export interface LoginSchema {
   role: "student" | "instructor" | "admin";
 }
 
+export interface SignUpSchema {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: "student" | "instructor" | "admin";
+  year?: string;
+}
+
 export interface LoginResponseError {
   message: string;
 }

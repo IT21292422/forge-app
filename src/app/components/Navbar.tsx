@@ -1,8 +1,8 @@
 "use client"
-import Link from 'next/link';
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUserStore } from "../stores/user.store";
 import Avatar from "./Avatar";
 import LoginModal from "./LoginModal";
 
@@ -11,9 +11,13 @@ const Navbar = () => {
 
   const [showLoginForm, setshowLoginForm] = useState(false);
 
+  const data = useUserStore(state => state.user);
   const handleAvatarClick = async () => {
+    // localStorage.removeItem('token')
+
     const token = await localStorage.getItem('token');
     // Check if the user is logged in based on the token
+
     if (token) {
       router.push('/profile');
     } else {
@@ -33,7 +37,9 @@ const Navbar = () => {
             <li><a>My Courses</a></li>
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl text-main">/Courzinger</a>
+        <button onClick={() => router.push('/')} className="btn btn-ghost text-xl text-main">
+          /Courzinger
+        </button>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 text-lg">
