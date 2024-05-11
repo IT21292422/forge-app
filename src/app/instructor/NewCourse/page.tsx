@@ -52,6 +52,13 @@ export default function Page() {
     console.log(courseData);
   };
 
+  const handleAddWWUL = () => {
+    setCourseData({
+      ...courseData,
+      whatWillLearn: [...courseData.whatWillLearn, '']
+    });
+  };
+
   const handleAddChapter = () => {
     setCourseData({
       ...courseData,
@@ -159,7 +166,7 @@ export default function Page() {
               placeholder={`What will you learn ${index + 1}`}
             />
           ))}
-          <button type="button" onClick={handleAddChapter} className="text-blue-500 hover:text-blue-700 focus:outline-none">
+          <button type="button" onClick={handleAddWWUL} className="text-blue-500 hover:text-blue-700 focus:outline-none">
             Add What will you learn
           </button>
         </div>
