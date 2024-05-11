@@ -7,7 +7,7 @@ export const createUser = async (
   data: CreateStudentRequestDTO | CreateInstructorRequestDTO,
 ) => {
   try {
-    console.log("received learner request in createUser", data);
+    console.log("received create request in createUser", data);
 
     const response = await fetch("http://localhost:3005/users/", {
       headers: {
