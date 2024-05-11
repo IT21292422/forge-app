@@ -1,28 +1,6 @@
-"use client"
-import Link from 'next/link';
-
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import Avatar from "./Avatar";
-import LoginModal from "./LoginModal";
-
 const Navbar = () => {
-  const router = useRouter();
-
-  const [showLoginForm, setshowLoginForm] = useState(false);
-
-  const handleAvatarClick = async () => {
-    const token = await localStorage.getItem('token');
-    // Check if the user is logged in based on the token
-    if (token) {
-      router.push('/profile');
-    } else {
-      setshowLoginForm(true);
-    }
-  };
-
   return (
-    <div className="navbar bg-base-100 justify-center items-start">
+    <div className="navbar bg-base-100">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -42,14 +20,8 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <button
-          className="btn btn-ghost btn-circle"
-          onClick={handleAvatarClick}
-        >
-          <Avatar />
-        </button>
+        <a className="btn btn-outline">Join For Free</a>
       </div>
-      <LoginModal setOpenModal={setshowLoginForm} openModal={showLoginForm} />
     </div>
   )
 };
