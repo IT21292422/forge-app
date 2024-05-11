@@ -6,14 +6,13 @@ import { ChangeEvent, useState } from 'react';
 
 interface ChapterState {
   chapterTitle: string;
-  pdfUrl: string;
-  videoUrl: string;
-  uploadedPdfUrl: string | null;
-  uploadedVideoUrl: string | null;
+  pdfUrl: string | null;
+  videoUrl: string | null;
 }
 
 interface CourseData {
   courseTitle: string;
+  imgUrl: string,
   price: string;
   category: string;
   tags: string;
@@ -27,6 +26,7 @@ export default function Page() {
 
   const [courseData, setCourseData] = useState({
     courseTitle: '',
+    imgUrl: '',
     price: '',
     category: '',
     tags: '',
@@ -37,8 +37,6 @@ export default function Page() {
         chapterTitle: '',
         pdfUrl: '',
         videoUrl: '',
-        uploadedPdfUrl: '',
-        uploadedVideoUrl: '',
       },
     ],
   });
@@ -76,16 +74,24 @@ export default function Page() {
   const handleAddChapter = () => {
     setCourseData({
       ...courseData,
-      chapters: [...courseData.chapters, { chapterTitle: '', pdfUrl: '', videoUrl: '', uploadedPdfUrl: '', uploadedVideoUrl: '' }]
+      chapters: [...courseData.chapters, { chapterTitle: '', pdfUrl: '', videoUrl: '' }]
     });
   };
+
+  const handleImgUpload = (result: CloudinaryUploadWidgetResults) => {
+    if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
+      const updatedCourse = { ...courseData };
+      updatedCourse.imgUrl = result.info.secure_url;
+      setCourseData(updatedCourse);
+    }
+  }
 
   const handlePDFUploadSuccess = (result: CloudinaryUploadWidgetResults, chapterIndex: number) => {
     if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
       const updatedChapters = [...courseData.chapters];
       updatedChapters[chapterIndex] = {
         ...updatedChapters[chapterIndex],
-        uploadedPdfUrl: result.info.secure_url,
+        pdfUrl: result.info.secure_url,
       };
       setCourseData({ ...courseData, chapters: updatedChapters });
     }
@@ -96,7 +102,7 @@ export default function Page() {
       const updatedChapters = [...courseData.chapters];
       updatedChapters[chapterIndex] = {
         ...updatedChapters[chapterIndex],
-        uploadedVideoUrl: result.info.secure_url,
+        videoUrl: result.info.secure_url,
       };
       setCourseData({ ...courseData, chapters: updatedChapters });
     }
@@ -125,6 +131,31 @@ export default function Page() {
             className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
             placeholder="Type script course"
           />
+        </div>
+
+        {/* img upload */}
+        <div>
+          <CldUploadWidget
+            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PERSIST}
+            onSuccess={handleImgUpload}
+          >
+            {({ open }: { open: () => void }) => (
+              <div>
+                <input
+                  type="text"
+                  name="imgUrl" // Change this line
+                  value={courseData.imgUrl || ''}
+                  readOnly
+                  className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
+                  placeholder={`Image Url for Course. Press the upload button.`}
+                />
+                <br />
+                <button className="btn btn-primary" onClick={open}>
+                  Upload Image
+                </button>
+              </div>
+            )}
+          </CldUploadWidget>
         </div>
 
         <div className="sm:col-span-4">
@@ -213,6 +244,7 @@ export default function Page() {
           </label>
           {courseData.chapters.map((chapter, index) => (
             <div key={index} className="space-y-3">
+              <br />
               <input
                 type="text"
                 name="chapterTitle"
@@ -231,10 +263,10 @@ export default function Page() {
                       <input
                         type="text"
                         name="pdfUrl"
-                        value={chapter.uploadedPdfUrl || ''}
+                        value={chapter.pdfUrl || ''}
                         readOnly
                         className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
-                        placeholder={`PDF Url for Chapter ${index + 1}`}
+                        placeholder={`PDF Url for Chapter ${index + 1}. Press the upload button.`}
                       />
                       <button className="btn btn-primary" onClick={open}>
                         Upload PDF
@@ -253,10 +285,10 @@ export default function Page() {
                       <input
                         type="text"
                         name="videoUrl"
-                        value={chapter.uploadedVideoUrl || ''}
+                        value={chapter.videoUrl || ''}
                         readOnly
                         className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
-                        placeholder={`Video Url for Chapter ${index + 1}`}
+                        placeholder={`Video Url for Chapter ${index + 1}. Press the upload button.`}
                       />
                       <button className="btn btn-primary" onClick={open}>
                         Upload Video
