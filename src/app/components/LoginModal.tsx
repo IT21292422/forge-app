@@ -17,11 +17,11 @@ const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
         defaultValues: {
             email: "",
             password: "",
-            role: "instructor",
+            role: "",
         },
     });
 
-    const { data, mutate, isPending } = useLoginUser()
+    const { data, mutateAsync, isPending } = useLoginUser()
 
     // useEffect(() => {
     //     console.log('Data from mutation', data);
@@ -36,13 +36,13 @@ const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
 
     const onSubmit = async (formData: LoginSchema) => {
         console.log(formData);
-        mutate(formData);
+        mutateAsync(formData);
         if (data) {
+            setOpenModal(false);
             localStorage.removeItem('token')
             console.log('Data from mutation', data);
             useUserStore.getState().setUser(data);
             localStorage.setItem('token', data.token)
-            setOpenModal(false);
         }
     };
 
@@ -121,7 +121,28 @@ const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
                                 {formState.errors.password?.message}
                             </p>
                         </div>
+                        <div className="flex flex-col  mb-4">
+                            <label
+                                className="block text-neutral-800 text-sm font-bold mb-2"
+                                htmlFor="role"
+                            >
+                                I am a
+                            </label>
 
+                            <div className="join">
+                                <input className="join-item btn" type="radio" aria-label="Student" value='student'
+                                    {...register("role", {
+                                        required: { message: "Please select a role", value: true },
+                                    })
+                                    }
+                                />
+                                <input className="join-item btn" type="radio" aria-label="Teacher" value='instructor' {...register("role", {
+                                    required: { message: "Please select a role", value: true },
+                                })
+                                } />
+                            </div>
+                            <p className="pl-3 text-red-500">{formState.errors.role?.message}</p>
+                        </div>
                         {/* if there is a button in form, it will close the modal */}
                         <div className="flex flex-1 my-5 justify-end">
                             {!isPending ?
