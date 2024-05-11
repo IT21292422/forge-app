@@ -26,13 +26,13 @@ const UserProfile = (props: Props) => {
 
 
     return (
-        <div className="flex flex-col justify-center items-center p-10 bg-blue-600 ">
-            <div className="flex items-center mb-4">
+        <div className="flex flex-col justify-center items-center lg:p-10 bg-blue-600 ">
+            <div className="flex items-center my-4 ">
                 <div className="flex">
                     <h2 className="text-xl font-bold self-center text-white">My Profile</h2>
                 </div>
             </div>
-            <div className="flex flex-col  flex-wrap gap-4 w-2/5 border border-8 gap-y-5 p-10  rounded-3xl">
+            <div className="flex flex-col my-10 flex-wrap gap-4 lg:w-2/5 border lg:border-8 gap-y-5 p-10  rounded-3xl">
                 <div className="overflow-auto bg-white p-4 rounded-lg shadow">
                     <h3 className="text-lg font-bold mb-2">Firstname</h3>
                     <p>{data?.firstName}</p>
