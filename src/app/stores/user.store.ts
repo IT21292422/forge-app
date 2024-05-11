@@ -1,20 +1,17 @@
 import { create } from "zustand";
 import {
-  CreateInstructorResponseDTO,
-  CreateStudentResponseDTO,
+  LoginInstructorResponseDTO,
+  LoginStudentResponseDTO,
 } from "../interfaces/auth/auth.interface";
 
 interface UserStore {
-  user: CreateStudentResponseDTO | CreateInstructorResponseDTO | null;
-  setUser: (
-    user: CreateStudentResponseDTO | CreateInstructorResponseDTO,
-  ) => void;
+  user: LoginStudentResponseDTO | LoginInstructorResponseDTO | null;
+  setUser: (user: LoginStudentResponseDTO | LoginInstructorResponseDTO) => void;
   logout: () => void;
 }
 
 export const useUserStore = create<UserStore>((set) => ({
   user: null,
-  setUser: (user: CreateStudentResponseDTO | CreateInstructorResponseDTO) =>
-    set({ user }),
+  setUser: (user) => set({ user }),
   logout: () => set({ user: null }),
 }));
