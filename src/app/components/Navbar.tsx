@@ -2,16 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useUserStore } from "../stores/user.store";
 import Avatar from "./Avatar";
 import LoginModal from "./LoginModal";
+import SignUpModal from "./SignUpModal";
 
 const Navbar = () => {
   const router = useRouter();
 
-  const [showLoginForm, setshowLoginForm] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showSignUpForm, setShowSignUpForm] = useState(false);
 
-  const data = useUserStore(state => state.user);
   const handleAvatarClick = async () => {
     // localStorage.removeItem('token')
 
@@ -21,7 +21,7 @@ const Navbar = () => {
     if (token) {
       router.push('/profile');
     } else {
-      setshowLoginForm(true);
+      setShowLoginForm(true);
     }
   };
 
@@ -55,7 +55,8 @@ const Navbar = () => {
           <Avatar />
         </button>
       </div>
-      <LoginModal setOpenModal={setshowLoginForm} openModal={showLoginForm} />
+      <LoginModal setOpenModal={setShowLoginForm} openModal={showLoginForm} setOpenSignUpModal={setShowSignUpForm} />
+      <SignUpModal setOpenModal={setShowSignUpForm} openModal={showSignUpForm} setOpenLoginModal={setShowLoginForm} />
     </div>
   )
 };
