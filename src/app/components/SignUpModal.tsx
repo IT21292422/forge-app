@@ -11,7 +11,7 @@ type Props = {
     openModal: boolean;
     setOpenModal: Dispatch<SetStateAction<boolean>>;
 };
-const LoginModal = ({ openModal, setOpenModal }: Props) => {
+const SignUpModal = ({ openModal, setOpenModal }: Props) => {
     const { register, handleSubmit, formState } = useForm<LoginSchema>({
         defaultValues: {
             email: "",
@@ -144,4 +144,4 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
     )
 }
 
-export default LoginModal
+export default SignUpModal
