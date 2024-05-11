@@ -1,16 +1,17 @@
 'use client'
 
+import { CldUploadWidget, CloudinaryUploadWidgetResults } from 'next-cloudinary';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 
-// Define the type for a chapter
-interface Chapter {
+interface ChapterState {
   chapterTitle: string;
   pdfUrl: string;
   videoUrl: string;
+  uploadedPdfUrl: string | null;
+  uploadedVideoUrl: string | null;
 }
 
-// Define the type for the entire course data
 interface CourseData {
   courseTitle: string;
   price: string;
@@ -18,7 +19,7 @@ interface CourseData {
   tags: string;
   description: string;
   whatWillLearn: string[];
-  chapters: Chapter[]; // chapter interface here
+  chapters: ChapterState[];
 }
 
 export default function Page() {
@@ -31,7 +32,15 @@ export default function Page() {
     tags: '',
     description: '',
     whatWillLearn: [''],
-    chapters: [{ chapterTitle: '', pdfUrl: '', videoUrl: '' }]
+    chapters: [
+      {
+        chapterTitle: '',
+        pdfUrl: '',
+        videoUrl: '',
+        uploadedPdfUrl: '',
+        uploadedVideoUrl: '',
+      },
+    ],
   });
 
   const handleChange = (e: any) => {
@@ -42,7 +51,12 @@ export default function Page() {
   const handleChapterChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updatedChapters = [...courseData.chapters];
-    updatedChapters[index][name as keyof Chapter] = value;
+
+    updatedChapters[index] = {
+      ...updatedChapters[index],
+      [name]: value,
+    };
+
     setCourseData({ ...courseData, chapters: updatedChapters });
   };
 
@@ -62,8 +76,30 @@ export default function Page() {
   const handleAddChapter = () => {
     setCourseData({
       ...courseData,
-      chapters: [...courseData.chapters, { chapterTitle: '', pdfUrl: '', videoUrl: '' }]
+      chapters: [...courseData.chapters, { chapterTitle: '', pdfUrl: '', videoUrl: '', uploadedPdfUrl: '', uploadedVideoUrl: '' }]
     });
+  };
+
+  const handlePDFUploadSuccess = (result: CloudinaryUploadWidgetResults, chapterIndex: number) => {
+    if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
+      const updatedChapters = [...courseData.chapters];
+      updatedChapters[chapterIndex] = {
+        ...updatedChapters[chapterIndex],
+        uploadedPdfUrl: result.info.secure_url,
+      };
+      setCourseData({ ...courseData, chapters: updatedChapters });
+    }
+  };
+
+  const handleVideoUploadSuccess = (result: CloudinaryUploadWidgetResults, chapterIndex: number) => {
+    if (result.info && typeof result.info === 'object' && 'secure_url' in result.info) {
+      const updatedChapters = [...courseData.chapters];
+      updatedChapters[chapterIndex] = {
+        ...updatedChapters[chapterIndex],
+        uploadedVideoUrl: result.info.secure_url,
+      };
+      setCourseData({ ...courseData, chapters: updatedChapters });
+    }
   };
 
   return (
@@ -185,27 +221,55 @@ export default function Page() {
                 className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
                 placeholder={`Chapter ${index + 1} Title`}
               />
-              <input
-                type="text"
-                name="pdfUrl"
-                value={chapter.pdfUrl}
-                onChange={(e) => handleChapterChange(index, e)}
-                className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
-                placeholder={`PDF Url for Chapter ${index + 1}`}
-              />
-              <input
-                type="text"
-                name="videoUrl"
-                value={chapter.videoUrl}
-                onChange={(e) => handleChapterChange(index, e)}
-                className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
-                placeholder={`Video Url for Chapter ${index + 1}`}
-              />
-              <button type="button" onClick={handleAddChapter} className="text-blue-500 hover:text-blue-700 focus:outline-none">
-                Add more chapters
-              </button>
+              <div>
+                <CldUploadWidget
+                  uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PERSIST}
+                  onSuccess={(result) => handlePDFUploadSuccess(result, index)}
+                >
+                  {({ open }: { open: () => void }) => (
+                    <div>
+                      <input
+                        type="text"
+                        name="pdfUrl"
+                        value={chapter.uploadedPdfUrl || ''}
+                        readOnly
+                        className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
+                        placeholder={`PDF Url for Chapter ${index + 1}`}
+                      />
+                      <button className="btn btn-primary" onClick={open}>
+                        Upload PDF
+                      </button>
+                    </div>
+                  )}
+                </CldUploadWidget>
+              </div>
+              <div>
+                <CldUploadWidget
+                  uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PERSIST}
+                  onSuccess={(result) => handleVideoUploadSuccess(result, index)}
+                >
+                  {({ open }: { open: () => void }) => (
+                    <div>
+                      <input
+                        type="text"
+                        name="videoUrl"
+                        value={chapter.uploadedVideoUrl || ''}
+                        readOnly
+                        className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
+                        placeholder={`Video Url for Chapter ${index + 1}`}
+                      />
+                      <button className="btn btn-primary" onClick={open}>
+                        Upload Video
+                      </button>
+                    </div>
+                  )}
+                </CldUploadWidget>
+              </div>
             </div>
           ))}
+          <button type="button" onClick={handleAddChapter} className="text-blue-500 hover:text-blue-700 focus:outline-none">
+            Add more chapters
+          </button>
         </div>
 
         <div className="mt-6 flex items-center justify-end gap-x-6">
