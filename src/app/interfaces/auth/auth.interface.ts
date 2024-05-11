@@ -37,14 +37,14 @@ export interface CreateInstructorResponseDTO {
   email: string;
   role: string;
   publishedCourses: string[];
-  _id: Types.ObjectId;
+  _id: string;
 }
 
 export interface LoginStudentResponseDTO {
   firstName: string;
   lastName: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   email: string;
   role: string;
   year: string;
@@ -55,10 +55,28 @@ export interface LoginStudentResponseDTO {
 export interface LoginInstructorResponseDTO {
   firstName: string;
   lastName: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   email: string;
   role: string;
   publishedCourses: string[];
-  _id?: Types.ObjectId;
+  _id?: string;
+}
+
+export interface CreateStudentRequestDTO {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  year: string;
+  password: string;
+  enrolledCourses: string[];
+}
+export interface CreateInstructorRequestDTO {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  password: string;
+  publishedCourses: string[];
 }

@@ -31,3 +31,11 @@ export const useLoginUser = () => {
     retry: 5,
   });
 };
+
+export const useSignUpUser = () => {
+  return useMutation({
+    mutationFn: (data: CreateStudentRequestDTO | CreateInstructorRequestDTO) =>
+      createUser(data),
+    retry: 5,
+  });
+};

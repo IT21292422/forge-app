@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import Image from 'next/image';
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
-import loginSvg from '../../../public/login-svg.svg';
+import loginSvg from '../../../public/login2-svg.svg';
 import { useLoginUser } from "../hooks/use-users";
 import { LoginSchema } from "../interfaces/auth/auth.interface";
 import { useUserStore } from "../stores/user.store";
@@ -10,8 +10,9 @@ import { useUserStore } from "../stores/user.store";
 type Props = {
     openModal: boolean;
     setOpenModal: Dispatch<SetStateAction<boolean>>;
+    setOpenSignUpModal: Dispatch<SetStateAction<boolean>>;
 };
-const LoginModal = ({ openModal, setOpenModal }: Props) => {
+const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
     const { register, handleSubmit, formState } = useForm<LoginSchema>({
         defaultValues: {
             email: "",
@@ -43,11 +44,11 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
             localStorage.setItem('token', data.token)
             setOpenModal(false);
         }
-
     };
+
     return (
-        <dialog id="my_modal_1" className="modal" open={openModal}>
-            <div className="modal-box">
+        <dialog id="my_modal_1" className="modal p-5" open={openModal}>
+            <div className="modal-box flex flex-col ">
                 <div className="flex flex-row justify-between items-center">
                     <h3 className="font-bold text-lg">Welcome back</h3>
 
@@ -57,7 +58,7 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
                 </div>
                 <p className="py-4">Let&apos;s get back to where you left</p>
                 <div className="flex  modal-action">
-                    <Image className="lg:flex md:flex flex-1 lg:items-start lg:justify-start hidden" src={loginSvg} alt="login" width={150} height={150} />
+                    <Image className="lg:flex md:flex flex-1 lg:items-start lg:justify-start hidden" src={loginSvg} alt="login" width={130} height={130} />
                     <form method="dialog" onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
                         {data?.message ?
                             <label
@@ -120,6 +121,7 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
                                 {formState.errors.password?.message}
                             </p>
                         </div>
+
                         {/* if there is a button in form, it will close the modal */}
                         <div className="flex flex-1 my-5 justify-end">
                             {!isPending ?
@@ -136,8 +138,21 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
                                     className="loading loading-spinner px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
                                     type="submit"
                                 /> : null}
+
                         </div>
                     </form>
+                </div>
+                <div className="flex justify-center">
+                    <p>Don&apos;t have an account?</p>
+                    <button
+                        onClick={() => {
+                            setOpenModal(false);
+                            setOpenSignUpModal(true);
+                        }}
+                        className="text-indigo-500 ml-2"
+                    >
+                        Sign up
+                    </button>
                 </div>
             </div>
         </dialog>
