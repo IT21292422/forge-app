@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import {
   LoginInstructorResponseDTO,
   LoginStudentResponseDTO,
@@ -10,8 +11,15 @@ interface UserStore {
   logout: () => void;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-  logout: () => set({ user: null }),
-}));
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user) => set({ user }),
+      logout: () => set({ user: null }),
+    }),
+    {
+      name: "user-storage",
+    },
+  ),
+);
