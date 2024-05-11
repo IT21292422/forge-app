@@ -1,10 +1,11 @@
 import { X } from "lucide-react";
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import loginSvg from '../../../public/login-svg.svg';
 import { useLoginUser } from "../hooks/use-users";
 import { LoginSchema } from "../interfaces/auth/auth.interface";
+import { useUserStore } from "../stores/user.store";
 
 type Props = {
     openModal: boolean;
@@ -21,20 +22,27 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
 
     const { data, mutate, isPending } = useLoginUser()
 
-    useEffect(() => {
-        console.log('Data from mutation', data);
+    // useEffect(() => {
+    //     console.log('Data from mutation', data);
+    //     if (data) {
+    //         if (data.token) {
+    //             localStorage.setItem('token', data.token)
+    //         }
+
+    //     }
+    // }, [data])
+
+
+    const onSubmit = async (formData: LoginSchema) => {
+        console.log(formData);
+        mutate(formData);
         if (data) {
-            if (data.token) {
-                localStorage.setItem('token', data.token)
-            }
-
+            console.log('Data from mutation', data);
+            useUserStore.setState({ user: data });
+            localStorage.setItem('token', data.token)
+            setOpenModal(false);
         }
-    }, [data])
 
-
-    const onSubmit = (data: LoginSchema) => {
-        console.log(data);
-        mutate(data);
     };
     return (
         <dialog id="my_modal_1" className="modal" open={openModal}>
@@ -58,6 +66,7 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
                                 {data.message}
                             </label>
                             : null}
+
                         <div className="flex flex-col  mb-4">
                             <label
                                 className="block text-neutral-800 text-sm font-bold mb-2"
@@ -112,14 +121,14 @@ const LoginModal = ({ openModal, setOpenModal }: Props) => {
                         </div>
                         {/* if there is a button in form, it will close the modal */}
                         <div className="flex flex-1 my-5 justify-end">
+                            {!isPending ?
+                                <button
 
-                            <button
-
-                                className=" px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
-                                type="submit"
-                            >
-                                Login
-                            </button>
+                                    className=" px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
+                                    type="submit"
+                                >
+                                    Login
+                                </button> : null}
                             {isPending ?
                                 <button
 
