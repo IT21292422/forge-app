@@ -1,6 +1,5 @@
 "use client"
 import { useState } from "react"
-import image from "../../../../../public/enroll-hero.jpeg"
 
 const courses = [
     {
@@ -107,22 +106,22 @@ export default function page({ params }: any) {
 
     const renderWhatLearn = course?.WhatWillLearn.map((learn: any) => {
         return (
-            <li className="text-white text-xl lg:text-3xl">{learn}</li>
+            <li className="text-black text-xl lg:text-3xl">{learn}</li>
         )
     })
 
     return (
-        <div className="bg-fixed bg-cover bg-repeat -mt-6 -mb-6 lg:h-screen" style={{ backgroundImage: `url(${image.src})` }}>
+        <div className="bg-[#A2D4F1] text-black -mt-6 -mb-6 lg:h-screen">
             <div className="flex justify-evenly pt-10 gap-5 flex-wrap">
-                <img src={course?.imgUrl} />
+                <img src={course?.imgUrl} className="rounded-xl" />
                 <div className="flex flex-col gap-5 flex-wrap">
                     <div className="flex justify-between items-center ml-5 mr-5">
-                        <p className="text-gray-100">Published On {course?.publishedDate}</p>
-                        <p className="badge badge-warning badge-lg text-white p-4">{course?.categories}</p>
+                        <p className="text-black">Published On {course?.publishedDate}</p>
+                        <p className="badge badge-warning badge-lg text-black p-4">{course?.categories}</p>
                     </div>
-                    <h1 className="text-5xl text-white font-serif text-center">{course?.courseTitle}</h1>
-                    <p className="text-xl text-gray-100 text-center">{course?.description}</p>
-                    <p className="text-xl text-gray-100 text-center">This course consists of {course?.chapters.length} Chapters</p>
+                    <h1 className="text-5xl text-black font-serif text-center">{course?.courseTitle}</h1>
+                    <p className="text-xl text-black text-center">{course?.description}</p>
+                    <p className="text-xl text-black text-center">This course consists of {course?.chapters.length} Chapters</p>
                     <div className="flex gap-2 justify-center items-center flex-wrap">
                         {renderTags}
                     </div>
@@ -130,7 +129,7 @@ export default function page({ params }: any) {
             </div>
             <div className="flex justify-evenly items-center pt-10 gap-5 flex-wrap">
                 <div className="flex flex-col gap-5 items-center flex-wrap">
-                    <h1 className="text-5xl text-white text-center">What You Will Learn?</h1>
+                    <h1 className="text-5xl text-black text-center">What You Will Learn?</h1>
                     <ul className="list-disc">
                         {renderWhatLearn}
                     </ul>
