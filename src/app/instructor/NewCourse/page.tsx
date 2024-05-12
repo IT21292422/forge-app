@@ -110,16 +110,16 @@ export default function Page() {
 
   return (
     <div className="flex justify-center">
-      <form onSubmit={handleSubmit} className="space-y-12 border rounded border-gray-900/10 p-12 w-[80vw]">
+      <form onSubmit={handleSubmit} className="space-y-12 border rounded-lg border-gray-900/10 p-12 w-[95vw] sm:w-[80vw] xl:w-[1024px]">
         <div>
-          <h2 className="text-base font-semibold leading-7 text-gray-900">New course</h2>
+          <h2 className="text-2xl font-semibold leading-7 text-gray-900">New course</h2>
           <p className="mt-1 text-sm leading-6 text-gray-600 hover:cursor-pointer underline" onClick={() => router.push('/instructor')}>
-            click to go back
+            Back
           </p>
         </div>
 
         <div className="sm:col-span-4">
-          <label htmlFor="courseTitle" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="courseTitle" className="block text-base font-medium leading-6 text-gray-900">
             Course Title
           </label>
           <input
@@ -159,7 +159,7 @@ export default function Page() {
         </div>
 
         <div className="sm:col-span-4">
-          <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="price" className="block text-base font-medium leading-6 text-gray-900">
             Price (Rs)
           </label>
           <input
@@ -174,7 +174,7 @@ export default function Page() {
         </div>
 
         <div className="sm:col-span-4">
-          <label htmlFor="category" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="category" className="block text-base font-medium leading-6 text-gray-900">
             Category
           </label>
           <input
@@ -189,7 +189,7 @@ export default function Page() {
         </div>
 
         <div className="sm:col-span-4">
-          <label htmlFor="tags" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="tags" className="block text-base font-medium leading-6 text-gray-900">
             Tags (max 3, separated by comma)
           </label>
           <input
@@ -204,7 +204,7 @@ export default function Page() {
         </div>
 
         <div className="sm:col-span-4">
-          <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="description" className="block text-base font-medium leading-6 text-gray-900">
             Description
           </label>
           <textarea
@@ -219,7 +219,7 @@ export default function Page() {
         </div>
 
         <div className="sm:col-span-4">
-          <label htmlFor="whatWillLearn" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="whatWillLearn" className="block text-base font-medium leading-6 text-gray-900">
             What will you learn
           </label>
           {courseData.whatWillLearn.map((item, index) => (
@@ -239,7 +239,7 @@ export default function Page() {
         </div>
 
         <div className="sm:col-span-4">
-          <label htmlFor="chapters" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="chapters" className="block text-base font-medium leading-6 text-gray-900">
             Chapters
           </label>
           {courseData.chapters.map((chapter, index) => (
@@ -297,8 +297,10 @@ export default function Page() {
                   )}
                 </CldUploadWidget>
               </div>
+              <br /><hr />
             </div>
           ))}
+          <br />
           <button type="button" onClick={handleAddChapter} className="text-blue-500 hover:text-blue-700 focus:outline-none">
             Add more chapters
           </button>
@@ -308,7 +310,7 @@ export default function Page() {
           <button type="button" className="btn btn-ghost" onClick={() => router.push('/instructor')}>
             Cancel
           </button>
-          <button type="submit" className="btn btn-info">
+          <button type="submit" className="btn btn-primary">
             Submit
           </button>
         </div>
