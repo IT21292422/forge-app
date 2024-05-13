@@ -45,7 +45,6 @@ export default function page({ params }: any) {
         retrieveData()
     }, [])
 
-
     const renderTags = course?.tags.map((tags: any) => {
         return (
             <p className="badge badge-error text-white badge-lg p-4">{tags}</p>

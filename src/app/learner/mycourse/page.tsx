@@ -31,7 +31,6 @@ export default function MyCourse() {
         },
     ]
 
-
     interface Course {
         courseId: string;
         courseTitle: string;
@@ -70,7 +69,6 @@ export default function MyCourse() {
     useEffect(() => {
         retrieveData()
     }, [])
-
 
     const enrolledCourses = courses.filter(course => user.enrolledCourse.includes(course.courseId));
 

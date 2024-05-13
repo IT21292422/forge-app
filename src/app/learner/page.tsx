@@ -42,7 +42,6 @@ export default function Home() {
         </div>
       </div>
       <div className="flex justify-center mt-20 mb-20 gap-10 flex-wrap">
-
         {
           isLoading ? (
             <div className="flex flex-col gap-4 w-52">

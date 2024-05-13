@@ -22,7 +22,6 @@ export default function ExploreCourse() {
         retrieveData()
     }, [])
 
-
     const renderCourses = courses.map((course, index) => {
         return (
             <AllCourseCard key={index} course={course} />

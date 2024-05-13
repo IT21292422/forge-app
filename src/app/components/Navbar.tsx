@@ -52,6 +52,7 @@ const Navbar = () => {
           </Link>
           </li>
           <li><Link href={'/learner/mycourse'}>
+
             My Courses
           </Link>
           </li>
