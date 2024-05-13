@@ -41,17 +41,17 @@ const Navbar = () => {
             <li><a>My Courses</a></li>
           </ul>
         </div> */}
-        <button onClick={() => router.push('/')} className="btn btn-ghost text-xl text-main">
+        <button onClick={() => router.push('/learner')} className="btn btn-ghost text-xl text-main">
           /Courzinger
         </button>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 text-lg">
-          <li><Link href={'/learner'}>
+          <li><Link href={'/learner/allcourse'}>
             Explore Courses
           </Link>
           </li>
-          <li><Link href={'/'}>
+          <li><Link href={'/learner/mycourse'}>
             My Courses
           </Link>
           </li>
