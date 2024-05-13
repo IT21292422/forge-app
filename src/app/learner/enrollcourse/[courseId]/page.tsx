@@ -1,102 +1,49 @@
 "use client"
-import { useState } from "react"
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-const courses = [
-    {
-        courseId: "1",
-        courseTitle: "C Programming For beginners",
-        publishedDate: "12/2/2024",
-        price: 100,
-        imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-        description: "This will give an overview of C programming",
-        categories: "Programming",
-        tags: ["C", "programming", "introduction", "IOT", "Networking"],
-        WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-        chapters: [
-            {
-                chapterId: "1",
-                chapterTitle: "Introduction",
-                pdfUrl: "",
-                videoUrl: "",
-                videoLength: "1 hour 30 minutes"
-            },
-            {
-                chapterId: "",
-                chapterTitle: "Practical",
-                pdfUrl: "",
-                videoUrl: "",
-                videoLength: "1 hour 30 minutes"
-            }
-        ]
-    },
-    {
-        courseId: "2",
-        courseTitle: "C Programming For Advanced",
-        publishedDate: "12/2/2024",
-        price: 200,
-        imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-        description: "This will give an overview of C programming",
-        categories: "Programming",
-        tags: ["C", "programming", "introduction"],
-        WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-        chapters: [
-            {
-                chapterId: "1",
-                chapterTitle: "Introduction",
-                pdfUrl: "",
-                videoUrl: "",
-                videoLength: "1 hour 30 minutes"
-            }
-        ]
+interface Course {
+    courseId: string;
+    courseTitle: string;
+    publishedDate: any;
+    imgUrl: string;
+    price: number;
+    categories: string;
+    tags: string[];
+    description: string;
+    WhatWillLearn: string[];
+    isApproved: boolean;
+    chapters: [
+        {
+            chapterId: string;
+            chapterTitle: string;
+            pdfUrl: string;
+            videoUrl: string;
+            videoLength: string;
+        },
+    ];
+}
 
-    },
-    {
-        courseId: "3",
-        courseTitle: "C Programming For beginners",
-        publishedDate: "12/2/2024",
-        price: 300,
-        imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-        description: "This will give an overview of C programming",
-        categories: "Programming",
-        tags: ["C", "programming", "introduction"],
-        WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-        chapters: [
-            {
-                chapterId: "1",
-                chapterTitle: "Introduction",
-                pdfUrl: "",
-                videoUrl: "",
-                videoLength: "1 hour 30 minutes"
-            }
-        ]
-
-    },
-    {
-        courseId: "4",
-        courseTitle: "C Programming For beginners",
-        publishedDate: "12/2/2024",
-        price: 200,
-        imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-        description: "This will give an overview of C programming",
-        categories: "Programming",
-        tags: ["C", "programming", "introduction"],
-        WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-        chapters: [
-            {
-                chapterId: "1",
-                chapterTitle: "Introduction",
-                pdfUrl: "",
-                videoUrl: "",
-                videoLength: "1 hour 30 minutes"
-            }
-        ]
-
-    }
-]
 
 export default function page({ params }: any) {
     const { courseId } = params
-    const [course, setCourse] = useState(courses.find(course => courseId === course.courseId))
+    const [course, setCourse] = useState<Course>()
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    const retrieveData = () => {
+        axios.get(`http://localhost:3005/learner/${courseId}`).then((res) => {
+            setCourse(res.data);
+            setIsLoading(false);
+        })
+            .catch((error) => {
+                console.log(error.response.data);
+            })
+    }
+
+    useEffect(() => {
+        retrieveData()
+    }, [])
 
     const renderTags = course?.tags.map((tags: any) => {
         return (
@@ -111,19 +58,51 @@ export default function page({ params }: any) {
     })
 
     return (
-        <div className="bg-[#A2D4F1] text-black -mt-6 -mb-6 lg:h-screen">
+        <div className="bg-[#A2D4F1] text-black -mt-6 -mb-10 lg:h-screen">
             <div className="flex justify-evenly pt-10 gap-5 flex-wrap">
                 <img src={course?.imgUrl} className="rounded-xl" />
                 <div className="flex flex-col gap-5 flex-wrap">
                     <div className="flex justify-between items-center ml-5 mr-5">
-                        <p className="text-black">Published On {course?.publishedDate}</p>
-                        <p className="badge badge-warning badge-lg text-black p-4">{course?.categories}</p>
+                        <p className="text-black">Published on &nbsp;
+                            {
+                                isLoading ? (
+                                    <span className="loading loading-bars loading-lg"></span>
+                                ) : (
+                                    new Date(course?.publishedDate).toLocaleDateString()
+                                )
+                            }
+                        </p>
+                        <p className="badge badge-warning badge-lg text-black p-4">
+                            {course?.categories}
+                        </p>
                     </div>
-                    <h1 className="text-5xl text-black font-serif text-center">{course?.courseTitle}</h1>
-                    <p className="text-xl text-black text-center">{course?.description}</p>
+                    <h1 className="text-5xl text-black font-serif text-center">
+                        {
+                            isLoading ? (
+                                <span className="loading loading-bars loading-lg"></span>
+                            ) : (
+                                course?.courseTitle
+                            )
+                        }
+                    </h1>
+                    <p className="text-xl text-black text-center">
+                        {
+                            isLoading ? (
+                                <span className="loading loading-bars loading-lg"></span>
+                            ) : (
+                                course?.description
+                            )
+                        }
+                    </p>
                     <p className="text-xl text-black text-center">This course consists of {course?.chapters.length} Chapters</p>
                     <div className="flex gap-2 justify-center items-center flex-wrap">
-                        {renderTags}
+                        {
+                            isLoading ? (
+                                <span className="loading loading-bars loading-lg"></span>
+                            ) : (
+                                renderTags
+                            )
+                        }
                     </div>
                 </div>
             </div>
@@ -131,7 +110,13 @@ export default function page({ params }: any) {
                 <div className="flex flex-col gap-5 items-center flex-wrap">
                     <h1 className="text-5xl text-black text-center">What You Will Learn?</h1>
                     <ul className="list-disc">
-                        {renderWhatLearn}
+                        {
+                            isLoading ? (
+                                <span className="loading loading-bars loading-lg"></span>
+                            ) : (
+                                renderWhatLearn
+                            )
+                        }
                     </ul>
                 </div>
                 <div className="flex flex-col gap-5 flex-wrap card w-96 bg-base-100 shadow-xl items-center p-5 m-5">
