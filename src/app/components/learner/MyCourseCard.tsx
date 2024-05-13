@@ -16,7 +16,7 @@ export default function MyCourseCard({ course, courseProgress }: any) {
 
     return (
         <div className="card w-96 bg-base-100 shadow-xl">
-            <figure><img src={course.imgUrl} alt="Course" /></figure>
+            <figure><img src={course.imgUrl} alt="Course" className="h-[200px] w-full object-cover" /></figure>
             <div className="card-body">
                 <div className="flex gap-28">
                     <h2 className="text-gray-500">{new Date(course?.publishedDate).toLocaleDateString()}</h2>

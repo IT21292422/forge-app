@@ -60,7 +60,7 @@ export default function page({ params }: any) {
     return (
         <div className="bg-[#A2D4F1] text-black -mt-6 -mb-10 lg:h-screen">
             <div className="flex justify-evenly pt-10 gap-5 flex-wrap">
-                <img src={course?.imgUrl} className="rounded-xl" />
+                <img src={course?.imgUrl} className="rounded-xl lg:w-[40%] px-2" />
                 <div className="flex flex-col gap-5 flex-wrap">
                     <div className="flex justify-between items-center ml-5 mr-5">
                         <p className="text-black">Published on &nbsp;
