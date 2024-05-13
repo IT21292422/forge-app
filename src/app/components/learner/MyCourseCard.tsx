@@ -19,7 +19,7 @@ export default function MyCourseCard({ course, courseProgress }: any) {
             <figure><img src={course.imgUrl} alt="Course" /></figure>
             <div className="card-body">
                 <div className="flex gap-28">
-                    <h2 className="text-gray-500">{course.publishedDate}</h2>
+                    <h2 className="text-gray-500">{new Date(course?.publishedDate).toLocaleDateString()}</h2>
                     <p className="text-right badge badge-warning badge-lg text-white p-4">{course.categories}</p>
                 </div>
                 <h2 className="card-title py-2">{course.courseTitle}</h2>
@@ -36,7 +36,7 @@ export default function MyCourseCard({ course, courseProgress }: any) {
                             {newProgress}%
                         </div>
                     </div>
-                    <button className="btn btn-primary"><Link href="/learner/course/[courseId]" as={`/learner/course/${course.courseId}`}>View</Link></button>
+                    <button className="btn btn-primary"><Link href="../learner/course/[courseId]" as={`../learner/course/${course.courseId}`}>View</Link></button>
                 </div>
             </div>
         </div>
