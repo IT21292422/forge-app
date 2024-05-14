@@ -21,3 +21,10 @@ interface Chapter {
   videoUrl: string;
   videoLength: string;
 }
+
+export type FetchAllCOurseResponeDTO =
+  | SIngleCourseResponseDTO[]
+  | {
+      statusCode: number;
+      message: string;
+    };
