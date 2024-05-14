@@ -1,127 +1,94 @@
+"use client"
 import MyCourseCard from '@/app/components/learner/MyCourseCard';
+import { useUserStore } from '@/app/stores/user.store';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+
+const user = {
+    _id: "01",
+    enrolledCourse: ["C201", "C103"]
+}
+
+const progress = [
+    {
+        courseId: "3",
+        students: [
+            {
+                learnerId: "01",
+                progress: "50"
+            }
+        ]
+    },
+    {
+        courseId: "4",
+        students: [
+            {
+                learnerId: "01",
+                progress: "40"
+            }
+        ]
+    },
+]
+
+interface Course {
+    courseId: string;
+    courseTitle: string;
+    publishedDate: any;
+    imgUrl: string;
+    price: number;
+    categories: string;
+    tags: string[];
+    description: string;
+    WhatWillLearn: string[];
+    isApproved: boolean;
+    chapters: [
+        {
+            chapterId: string;
+            chapterTitle: string;
+            pdfUrl: string;
+            videoUrl: string;
+            videoLength: string;
+        },
+    ];
+}
+
 
 export default function MyCourse() {
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [Keyword, setKeyword] = useState('')
 
-    const user = {
-        _id: "01",
-        enrolledCourse: ["3", "4"]
+    const data = useUserStore(state => state.user)
+    console.log(data);
+    console.log(data?._id);
+
+    const filteredCourses = courses.filter((course) => {
+        const courseTitle = course.courseTitle.toLowerCase()
+        const categories = course.categories.toLowerCase()
+        const description = course.description.toLowerCase()
+        const tags = course.tags.map((tag) => tag.toLowerCase());
+        const whatwilllearn = course.WhatWillLearn.map((what) => what.toLowerCase());
+        const keyword = Keyword.toLowerCase()
+
+        return courseTitle.includes(keyword) || categories.includes(keyword) || description.includes(keyword) || tags.includes(keyword) || whatwilllearn.includes(keyword)
+    })
+
+
+    const retrieveData = () => {
+        axios.get(`http://localhost:3005/learner`).then((res) => {
+            setCourses(res.data);
+            setIsLoading(false);
+        })
+            .catch((error) => {
+                console.log(error.response.data);
+            })
     }
 
-    const progress = [
-        {
-            courseId: "3",
-            students: [
-                {
-                    learnerId: "01",
-                    progress: "50"
-                }
-            ]
-        },
-        {
-            courseId: "4",
-            students: [
-                {
-                    learnerId: "01",
-                    progress: "40"
-                }
-            ]
-        },
-    ]
+    useEffect(() => {
+        retrieveData()
+    }, [])
 
-    const courses = [
-        {
-            courseId: "1",
-            courseTitle: "C Programming For beginners",
-            publishedDate: "12/2/2024",
-            price: 100,
-            imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-            description: "This will give an overview of C programming",
-            categories: "Programming",
-            tags: ["C", "programming", "introduction", "IOT", "Networking"],
-            WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-            chapters: [
-                {
-                    chapterId: "1",
-                    chapterTitle: "Introduction",
-                    pdfUrl: "",
-                    videoUrl: "",
-                    videoLength: "1 hour 30 minutes"
-                },
-                {
-                    chapterId: "",
-                    chapterTitle: "Practical",
-                    pdfUrl: "",
-                    videoUrl: "",
-                    videoLength: "1 hour 30 minutes"
-                }
-            ]
-        },
-        {
-            courseId: "2",
-            courseTitle: "C Programming For Advanced",
-            publishedDate: "12/2/2024",
-            price: 200,
-            imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-            description: "This will give an overview of C programming",
-            categories: "Programming",
-            tags: ["C", "programming", "introduction"],
-            WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-            chapters: [
-                {
-                    chapterId: "1",
-                    chapterTitle: "Introduction",
-                    pdfUrl: "",
-                    videoUrl: "",
-                    videoLength: "1 hour 30 minutes"
-                }
-            ]
-
-        },
-        {
-            courseId: "3",
-            courseTitle: "C Programming For beginners",
-            publishedDate: "12/2/2024",
-            price: 300,
-            imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-            description: "This will give an overview of C programming",
-            categories: "Programming",
-            tags: ["C", "programming", "introduction"],
-            WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-            chapters: [
-                {
-                    chapterId: "1",
-                    chapterTitle: "Introduction",
-                    pdfUrl: "",
-                    videoUrl: "",
-                    videoLength: "1 hour 30 minutes"
-                }
-            ]
-
-        },
-        {
-            courseId: "4",
-            courseTitle: "C Programming For beginners",
-            publishedDate: "12/2/2024",
-            price: 200,
-            imgUrl: "https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png",
-            description: "This will give an overview of C programming",
-            categories: "Programming",
-            tags: ["C", "programming", "introduction"],
-            WhatWillLearn: ["How to Program In C", "OOP concepts", "Threads", "Deploy to AWS"],
-            chapters: [
-                {
-                    chapterId: "1",
-                    chapterTitle: "Introduction",
-                    pdfUrl: "",
-                    videoUrl: "",
-                    videoLength: "1 hour 30 minutes"
-                }
-            ]
-
-        }
-    ]
-
-    const enrolledCourses = courses.filter(course => user.enrolledCourse.includes(course.courseId));
+    const enrolledCourses = filteredCourses.filter(course => user.enrolledCourse.includes(course.courseId));
 
     const renderCourses = enrolledCourses.map((course, index) => {
 
@@ -141,13 +108,24 @@ export default function MyCourse() {
                 <h1 className="text-4xl text-center text-white pt-10 font-serif">Enrolled Courses</h1>
                 <div className="flex w-screen justify-center px-16 pb-16 pt-10">
                     <label className="input input-bordered flex items-center gap-2 w-[300px] md:w-[80%]">
-                        <input type="text" className="grow truncate" placeholder="What Do You Want To Learn?" />
+                        <input type="text" className="grow truncate" placeholder="What Do You Want To Learn?" value={Keyword} onChange={(e) => setKeyword(e.target.value)} />
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70"><path fillRule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clipRule="evenodd" /></svg>
                     </label>
                 </div>
             </div>
             <div className="flex justify-center mt-20 mb-20 gap-10 flex-wrap px-5">
-                {renderCourses}
+                {
+                    isLoading ? (
+                        <div className="flex flex-col gap-4 w-52">
+                            <div className="skeleton h-32 w-full"></div>
+                            <div className="skeleton h-4 w-28"></div>
+                            <div className="skeleton h-4 w-full"></div>
+                            <div className="skeleton h-4 w-full"></div>
+                        </div>
+                    ) : (
+                        renderCourses
+                    )
+                }
             </div>
         </>
     )
