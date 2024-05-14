@@ -1,19 +1,18 @@
-import {
-  approveCourse,
-  fetchAllUnapprovedCourses,
-} from "@/app/lib/admin/admin.api";
+import { SIngleCourseResponseDTO } from "@/app/interfaces/course/course.dto";
+import { approveCourse, fetchAllCourses } from "@/app/lib/admin/admin.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useApproveCurse = () => {
   return useMutation({
-    mutationFn: (courseId: string) => approveCourse(courseId),
+    mutationFn: (course: SIngleCourseResponseDTO) => approveCourse(course),
+    mutationKey: ["approve-course"],
     retry: 3,
   });
 };
 
 export const useAdminCourses = () => {
-  return useQuery({
+  return useQuery<SIngleCourseResponseDTO[]>({
     queryKey: ["get-unapproved-courses"],
-    queryFn: () => fetchAllUnapprovedCourses(),
+    queryFn: () => fetchAllCourses(),
   });
 };

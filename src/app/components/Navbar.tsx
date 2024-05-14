@@ -56,7 +56,7 @@ const Navbar = () => {
           </Link>
           </li>
           {role === 'admin' ?
-            <li><Link href={'/'}>
+            <li><Link href={'/admin'}>
               Admin
             </Link>
             </li>
