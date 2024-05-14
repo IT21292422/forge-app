@@ -1,4 +1,5 @@
 "use client";
+import AdminConsoleSkeleton from "../components/skeletons/AdminConsole";
 import { useAdminCourses, useApproveCurse } from "../hooks/admin/use-admin";
 import { SIngleCourseResponseDTO } from "../interfaces/course/course.dto";
 
@@ -11,7 +12,7 @@ const AdminConsole = (props: Props) => {
     const { data: approvalResult, mutateAsync, isPending: isApproving, } = useApproveCurse()
 
     if (isPending) {
-        return <div className="flex justify-center "><div className="loading loading-spinner bg-main" /></div>
+        return <div className="flex justify-center mx-10"><AdminConsoleSkeleton /></div>
     }
 
     if (isError) {
