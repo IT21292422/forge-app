@@ -79,42 +79,39 @@
 // }
 "use client"
 
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Checkout() {
-  const router = useRouter()
+  const [paymentWindow, setPaymentWindow] = useState<Window | null>(null);
+  const [courseId, setCourseId] = useState('oc759a67c');
+  const searchParams = useSearchParams();
+  const cId = searchParams.get('cId');
+  const userId = searchParams.get('userId');
+
+  const payment = {
+    learnerId: "user123",
+    courseId: "course456",
+    orderId: "order789",
+    amount: 200.00,
+    dateTime: Date.now()
+  };
 
   useEffect(() => {
-    window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
+  }, [paymentWindow]);
 
   const proceedPayment = () => {
-    document.getElementById('my_modal_1').showModal()
-    router.push('https://sandbox.payhere.lk/pay/o593d33df')
-  }
+    axios.post('http://localhost:3005/payment/add', payment).then((result) => {
+      alert('added')
+    })
+    window.open(`https://sandbox.payhere.lk/pay/${courseId}`, '_blank');
+    window.location.href = 'http://localhost:3000/learner';
+  };
 
   const cancelePayment = () => {
-    router.back()
+    window.history.go(-1)
   }
-
-  const handleMessage = (event) => {
-    // Check if the message is from the payment gateway's window
-    if (event.origin === 'https://sandbox.payhere.lk') {
-      // Check if the transaction was successful
-      if (event.data === 'success') {
-        // Optionally, you can perform any additional actions here
-        // For example, update the user's order status in your database
-
-        // Close the payment gateway's window
-        event.source.close();
-      }
-    }
-  };
 
   return (
     <div className='flex justify-center items-center'>
@@ -133,10 +130,10 @@ export default function Checkout() {
         </dialog>
       </div>
       <div className="card w-96 bg-base-100 shadow-xl">
-        <figure><img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+        <figure><img src="https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png" alt="Shoes" /></figure>
         <div className="card-body">
-          <h2 className="card-title">Shoes!</h2>
-          <p>If a dog chews shoes whose shoes does he choose?</p>
+          <h2 className="card-title">C For beginners</h2>
+          <p>From fundamental to expert level , all aspects of programming styles are covered in single course</p>
           <div className="card-actions justify-end">
             <button onClick={cancelePayment} className='btn btn-error'>Cancel</button>
             <button onClick={proceedPayment} className='btn btn-primary'>Pay</button>

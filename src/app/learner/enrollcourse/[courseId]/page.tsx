@@ -1,6 +1,7 @@
 "use client"
-import { useState } from "react"
-import image from "../../../../../public/enroll-hero.jpeg"
+import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import image from "../../../../../public/enroll-hero.jpeg";
 
 const courses = [
     {
@@ -96,6 +97,7 @@ const courses = [
 ]
 
 export default function page({ params }: any) {
+    const router = useRouter()
     const { courseId } = params
     const [course, setCourse] = useState(courses.find(course => courseId === course.courseId))
 
@@ -111,10 +113,15 @@ export default function page({ params }: any) {
         )
     })
 
+    const processPayment = () => {
+        router.push(`/payment?cId=${courseId}&userId=123`)
+    }
+
     return (
         <div className="bg-fixed bg-cover bg-repeat -mt-6 -mb-6 lg:h-screen" style={{ backgroundImage: `url(${image.src})` }}>
             <div className="flex justify-evenly pt-10 gap-5 flex-wrap">
-                <img src={course?.imgUrl} />
+                {/* <img src={course?.imgUrl} /> */}
+                <img src='https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png' />
                 <div className="flex flex-col gap-5 flex-wrap">
                     <div className="flex justify-between items-center ml-5 mr-5">
                         <p className="text-gray-100">Published On {course?.publishedDate}</p>
@@ -143,7 +150,7 @@ export default function page({ params }: any) {
                             <p className="text-sm font-bold text-gray-500">No hidden charges</p>
                         </div>
                     </div>
-                    <a className="btn bg-main text-white w-full">Buy Now</a>
+                    <button onClick={processPayment} className="btn bg-main text-white w-full">Buy Now</button>
                     <p className="text-sm font-bold text-gray-500 -mt-3">Lifetime Access</p>
                 </div>
             </div>
