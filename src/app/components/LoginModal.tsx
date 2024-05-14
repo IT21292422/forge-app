@@ -60,14 +60,14 @@ const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
                 <div className="flex  modal-action">
                     <Image className="lg:flex md:flex flex-1 lg:items-start lg:justify-start hidden" src={loginSvg} alt="login" width={130} height={130} />
                     <form method="dialog" onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-                        {data?.message ?
+                        {/* {data?.message ?
                             <label
                                 className="block border p-3 text-red-500 text-sm font-bold mb-2"
 
                             >
                                 {data.message}
                             </label>
-                            : null}
+                            : null} */}
 
                         <div className="flex flex-col  mb-4">
                             <label
