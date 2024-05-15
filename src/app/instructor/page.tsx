@@ -18,10 +18,10 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await getAllCourses();
+      const response = await getAllCourses();
 
       // Filter courses based on instructor
-      let data = res.data.filter((c) => { return c.instructorId === instructor });
+      let data = response.data.filter((c) => { return c.instructorId === instructor });
 
       setCount(data.filter((c) => c.isApproved === true).length);
       setCourses(data);

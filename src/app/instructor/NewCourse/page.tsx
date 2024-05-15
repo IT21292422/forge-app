@@ -1,13 +1,16 @@
 'use client'
 
+import { useUserStore } from '@/app/stores/user.store';
 import { CldUploadWidget, CloudinaryUploadWidgetResults } from 'next-cloudinary';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
+import { Course, createCourse } from '../apiFunctions';
 
 interface ChapterState {
   chapterTitle: string;
   pdfUrl: string | null;
   videoUrl: string | null;
+  videoLength: string | null;
 }
 
 interface CourseData {
@@ -59,10 +62,50 @@ export default function Page() {
     setCourseData({ ...courseData, chapters: updatedChapters });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleVideoLengthChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const updatedChapters = [...courseData.chapters];
+
+    updatedChapters[index] = {
+      ...updatedChapters[index],
+      [name]: value,
+    };
+
+    setCourseData({ ...courseData, chapters: updatedChapters });
+  };
+
+  const instructorId = useUserStore(state => state.user?._id) || '';
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO submit data
-    console.log(courseData);
+
+    try {
+
+      // data object
+      const course = {
+        courseTitle: courseData.courseTitle,
+        courseId: `${Date.now()}`,
+        imgUrl: courseData.imgUrl,
+        price: parseFloat(courseData.price), // Convert the price to a number
+        categories: courseData.category,
+        tags: courseData.tags.split(',').map((tag) => tag.trim()),
+        description: courseData.description,
+        WhatWillLearn: courseData.whatWillLearn,
+        chapters: courseData.chapters.map((chapter, index) => ({
+          chapterId: `${index + 1}`,
+          chapterTitle: chapter.chapterTitle,
+          pdfUrl: chapter.pdfUrl,
+          videoUrl: chapter.videoUrl,
+          videoLength: chapter.videoLength,
+        })),
+      };
+
+      const response = await createCourse(course as Course, instructorId);
+
+      console.log('Course created:', response.data);
+    } catch (error) {
+      console.error('Error creating course:', error);
+    }
   };
 
   const handleAddWWUL = () => {
@@ -70,6 +113,12 @@ export default function Page() {
       ...courseData,
       whatWillLearn: [...courseData.whatWillLearn, '']
     });
+  };
+
+  const handleWhatWillLearnChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedWhatWillLearn = [...courseData.whatWillLearn];
+    updatedWhatWillLearn[index] = e.target.value;
+    setCourseData({ ...courseData, whatWillLearn: updatedWhatWillLearn });
   };
 
   const handleAddChapter = () => {
@@ -229,7 +278,7 @@ export default function Page() {
               type="text"
               name="whatWillLearn"
               value={item}
-              onChange={(e) => handleChapterChange(index, e)}
+              onChange={(e) => handleWhatWillLearnChange(index, e)}
               className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
               placeholder={`What will you learn ${index + 1}`}
             />
@@ -302,7 +351,7 @@ export default function Page() {
                 type="text"
                 name="chapterTitle"
                 value={chapter.videoLength}
-                onChange={(e) => handleChapterChange(index, e)}
+                onChange={(e) => handleVideoLengthChange(index, e)}
                 className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
                 placeholder={`videoLength`}
               />

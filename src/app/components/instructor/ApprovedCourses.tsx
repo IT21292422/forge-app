@@ -14,10 +14,10 @@ export default function ApprovedCourses() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await getAllCourses();
+      const response = await getAllCourses();
 
       // Filter cards based on instructor
-      let data = res.data.filter((c) => { return c.instructorId === instructor });
+      let data = response.data.filter((c) => { return c.instructorId === instructor });
 
       // Filter cards based on isApproved prop
       data = data.filter(c => c.isApproved === true);
