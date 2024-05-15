@@ -26,9 +26,9 @@ export const useCreateUser = (
 
 export const useLoginUser = () => {
   return useMutation({
+    mutationKey: ["login-user"],
     mutationFn: ({ email, password, role }: LoginSchema) =>
       loginUser(email, password, role),
-    retry: 5,
   });
 };
 
