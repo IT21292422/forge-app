@@ -1,14 +1,35 @@
 'use client'
 
-import { useState } from "react";
-import { cardsMockData } from "./mockData/cardsMockData";
+import { Course, getAllCourses } from "@/app/instructor/apiFunctions";
+import { useUserStore } from "@/app/stores/user.store";
+import { useEffect, useState } from "react";
 
 export default function ApprovedCourses() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [cards, setCards] = useState<Course[]>([]);
 
-  // Filter cards based on isApproved true and search query
-  const approvedCards = cardsMockData.filter(card =>
-    card.isApproved === true &&
+  const instructor = useUserStore(state => state.user?._id)
+  console.log('instructor: ', instructor);
+
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await getAllCourses();
+
+      // Filter cards based on instructor
+      let data = res.data.filter((c) => { return c.instructorId === instructor });
+
+      // Filter cards based on isApproved prop
+      data = data.filter(c => c.isApproved === true);
+
+      setCards(data);
+      console.log('data:', data);
+    }
+    fetchData()
+  }, [instructor]);
+
+  // Filter cards based on search query
+  const approvedCards = cards.filter(card =>
     card.courseTitle.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -39,7 +60,7 @@ export default function ApprovedCourses() {
             <div className="card-body">
               <h2 className="card-title">
                 {card.courseTitle}
-                <div className="badge badge-secondary">{card.category}</div>
+                <div className="badge badge-secondary">{card.categories}</div>
               </h2>
 
               <p>Rs: {card.price}</p>
