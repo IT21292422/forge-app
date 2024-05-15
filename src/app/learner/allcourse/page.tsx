@@ -1,5 +1,6 @@
 "use client"
 import AllCourseCard from "@/app/components/learner/AllCourseCard";
+import { useUserStore } from "@/app/stores/user.store";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -31,6 +32,8 @@ export default function ExploreCourse() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [Keyword, setKeyword] = useState('')
+    const user = useUserStore(state => state.user)
+    console.log(user)
 
     const filteredCourses = courses.filter((course) => {
         const courseTitle = course.courseTitle.toLowerCase()
