@@ -18,7 +18,7 @@ export default function Checkout() {
     learnerId: userId,
     courseId: cId,
     orderId: `${cId}_${new Date().getTime()}`,
-    amount: 200.00,
+    amount: course?.price,
     dateTime: Date.now()
   };
 
@@ -36,12 +36,14 @@ export default function Checkout() {
     fetchCourse()
   }, [paymentWindow]);
 
-  const proceedPayment = () => {
-    axios.post('http://localhost:3005/payment/add', payment).then((result) => {
-      alert('added')
+  const proceedPayment = async () => {
+    await axios.post('http://localhost:3005/payment/add', payment).then((result) => {
+      //alert('added')
+    })
+    await axios.put(`http://localhost:3005/learner/${userId}/enrollcourse/${cId}`).then((result) => {
     })
     window.open(`https://sandbox.payhere.lk/pay/${cId}`, '_blank');
-    window.location.href = `localhost:3005/learner/${userId}/enrollcourse/${cId}`;
+    window.location.href = `learner/course/${cId}`;
   };
 
   const cancelePayment = () => {
