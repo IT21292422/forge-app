@@ -1,5 +1,6 @@
 "use client"
 import axios from "axios";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 
 interface Course {
@@ -27,6 +28,7 @@ interface Course {
 
 export default function page({ params }: any) {
     const { courseId } = params
+    const router = useRouter()
     const [course, setCourse] = useState<Course>()
 
     const [isLoading, setIsLoading] = useState(true);
@@ -57,10 +59,14 @@ export default function page({ params }: any) {
         )
     })
 
+    const processPayment = () => {
+        router.push(`/payment?cId=${courseId}&userId=123`)
+    }
+
     return (
         <div className="bg-[#A2D4F1] text-black -mt-6 -mb-10 lg:h-screen">
             <div className="flex justify-evenly pt-10 gap-5 flex-wrap">
-                <img src={course?.imgUrl} className="rounded-xl" />
+                <img src={course?.imgUrl} className="rounded-xl lg:w-[40%] px-2" />
                 <div className="flex flex-col gap-5 flex-wrap">
                     <div className="flex justify-between items-center ml-5 mr-5">
                         <p className="text-black">Published on &nbsp;
@@ -127,7 +133,7 @@ export default function page({ params }: any) {
                             <p className="text-sm font-bold text-gray-500">No hidden charges</p>
                         </div>
                     </div>
-                    <a className="btn bg-main text-white w-full">Buy Now</a>
+                    <button onClick={processPayment} className="btn bg-main text-white w-full">Buy Now</button>
                     <p className="text-sm font-bold text-gray-500 -mt-3">Lifetime Access</p>
                 </div>
             </div>

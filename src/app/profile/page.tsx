@@ -17,7 +17,7 @@ const UserProfile = (props: Props) => {
     const handleLogout = async () => {
         localStorage.removeItem('token');
         useUserStore.getState().logout();
-        router.push('/')
+        router.push('/learner')
     }
 
     if (!data) {

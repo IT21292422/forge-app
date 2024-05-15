@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useUserStore } from "../stores/user.store";
 import Avatar from "./Avatar";
@@ -10,7 +10,7 @@ import SignUpModal from "./SignUpModal";
 
 const Navbar = () => {
   const router = useRouter();
-
+  const pathname = usePathname();
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showSignUpForm, setShowSignUpForm] = useState(false);
 
@@ -47,17 +47,17 @@ const Navbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 text-lg">
-          <li><Link href={'/learner/allcourse'}>
+          <li><Link href={'/learner/allcourse'} className={pathname === '/learner/allcourse' ? "underline text-blue-800 focus:text-blue-800" : ""}>
             Explore Courses
           </Link>
           </li>
-          <li><Link href={'/learner/mycourse'}>
+          <li><Link href={'/learner/mycourse'} className={pathname === '/learner/mycourse' ? "underline text-blue-800 focus:text-blue-800" : ""}>
 
             My Courses
           </Link>
           </li>
           {role === 'admin' ?
-            <li><Link href={'/'}>
+            <li><Link href={'/admin'} className={pathname === '/admin' ? "underline text-blue-800 focus:text-blue-800" : ""}>
               Admin
             </Link>
             </li>
