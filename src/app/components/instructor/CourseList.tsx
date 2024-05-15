@@ -1,3 +1,8 @@
+'use client'
+
+import { LoginInstructorResponseDTO } from "@/app/interfaces/auth/auth.interface";
+import { useUserStore } from "@/app/stores/user.store";
+import { useState } from "react";
 import { cardsMockData } from "./mockData/cardsMockData";
 
 interface CourseListProps {
@@ -6,6 +11,18 @@ interface CourseListProps {
 }
 
 export default function CourseList({ title, isApproved }: CourseListProps) {
+  // const [approvedCards, setApprovedCards] = useState<Course[]>([]);
+  const [userData, setUserData] = useState<LoginInstructorResponseDTO | null>();
+
+  const instructor = useUserStore(state => state.user)
+  console.log(instructor);
+
+
+  // useEffect(() => {
+  //    const res = await getAllCourses()
+  // }, [])
+
+
   // Filter cards based on isApproved prop
   const approvedCards = cardsMockData.filter(card => card.isApproved === isApproved);
 

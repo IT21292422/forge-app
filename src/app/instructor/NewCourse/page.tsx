@@ -37,6 +37,7 @@ export default function Page() {
         chapterTitle: '',
         pdfUrl: '',
         videoUrl: '',
+        videoLength: '',
       },
     ],
   });
@@ -74,7 +75,7 @@ export default function Page() {
   const handleAddChapter = () => {
     setCourseData({
       ...courseData,
-      chapters: [...courseData.chapters, { chapterTitle: '', pdfUrl: '', videoUrl: '' }]
+      chapters: [...courseData.chapters, { chapterTitle: '', pdfUrl: '', videoUrl: '', videoLength: '' }]
     });
   };
 
@@ -297,6 +298,14 @@ export default function Page() {
                   )}
                 </CldUploadWidget>
               </div>
+              <input
+                type="text"
+                name="chapterTitle"
+                value={chapter.videoLength}
+                onChange={(e) => handleChapterChange(index, e)}
+                className="block w-full mt-1 border rounded-md shadow-sm border-gray-300 py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm sm:leading-5"
+                placeholder={`videoLength`}
+              />
               <br /><hr />
             </div>
           ))}
