@@ -1,5 +1,6 @@
 "use client"
 import axios from 'axios';
+import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -152,10 +153,10 @@ export default function page({ params }: any) {
         )
     })
 
-    const renderChapters = course?.chapters.map((chapter) => {
+    const renderChapters = course?.chapters.map((chapter, index) => {
         return (
             <>
-                <div className="flex m-10 justify-center">
+                <div key={index} className="flex m-10 justify-center">
                     <div className="collapse collapse-plus bg-base-200 lg:w-[80%]">
                         <input type="radio" name="my-accordion-3" />
                         <div className="collapse-title flex justify-between text-sm md:text-xl font-medium">
@@ -186,12 +187,12 @@ export default function page({ params }: any) {
                                     </svg>
                                     <h1>Video</h1>
                                 </div>
-                                {/* <CldVideoPlayer
-                                    id={chapter.chapterId}
+                                <CldVideoPlayer
+                                    id={index.toString()}
                                     width="1920"
                                     height="1080"
                                     src={chapter.videoUrl}
-                                /> */}
+                                />
                             </div>
                         </div>
                     </div>
@@ -240,9 +241,6 @@ export default function page({ params }: any) {
                         </div>
                     </div>
                     <div>
-                        <button className="btn btn-error text-white" onClick={openModal}>Unenroll Course</button>
-                    </div>
-                    <div>
                         <div
                             className="radial-progress text-primary"
                             style={{ '--value': `${progress}`, "--size": "4rem" } as any}
@@ -250,6 +248,9 @@ export default function page({ params }: any) {
                         >
                             {Math.round(progress)}%
                         </div>
+                    </div>
+                    <div>
+                        <button className="btn btn-error text-white" onClick={openModal}>Unenroll Course</button>
                     </div>
                 </div>
             </div>
