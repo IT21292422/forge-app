@@ -1,5 +1,6 @@
 "use client"
 import axios from "axios";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 
 interface Course {
@@ -27,6 +28,7 @@ interface Course {
 
 export default function page({ params }: any) {
     const { courseId } = params
+    const router = useRouter()
     const [course, setCourse] = useState<Course>()
 
     const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +58,10 @@ export default function page({ params }: any) {
             <li className="text-black text-xl lg:text-3xl">{learn}</li>
         )
     })
+
+    const processPayment = () => {
+        router.push(`/payment?cId=${courseId}&userId=123`)
+    }
 
     return (
         <div className="bg-[#A2D4F1] text-black -mt-6 -mb-10 lg:h-screen">
@@ -127,7 +133,7 @@ export default function page({ params }: any) {
                             <p className="text-sm font-bold text-gray-500">No hidden charges</p>
                         </div>
                     </div>
-                    <a className="btn bg-main text-white w-full">Buy Now</a>
+                    <button onClick={processPayment} className="btn bg-main text-white w-full">Buy Now</button>
                     <p className="text-sm font-bold text-gray-500 -mt-3">Lifetime Access</p>
                 </div>
             </div>

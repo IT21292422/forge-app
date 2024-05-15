@@ -5,30 +5,9 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 const user = {
-    _id: "01",
+    _id: "663f420981c794b74836631a",
     enrolledCourse: ["C201", "C103"]
 }
-
-const progress = [
-    {
-        courseId: "3",
-        students: [
-            {
-                learnerId: "01",
-                progress: "50"
-            }
-        ]
-    },
-    {
-        courseId: "4",
-        students: [
-            {
-                learnerId: "01",
-                progress: "40"
-            }
-        ]
-    },
-]
 
 interface Course {
     courseId: string;
@@ -52,9 +31,9 @@ interface Course {
     ];
 }
 
-
 export default function MyCourse() {
     const [courses, setCourses] = useState<Course[]>([]);
+    const [progresses, setProgresses] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     const [Keyword, setKeyword] = useState('')
 
@@ -84,20 +63,28 @@ export default function MyCourse() {
             })
     }
 
+    const retrieveProgress = () => {
+        axios.get(`http://localhost:3005/learner/getprogress/${user._id}`).then((res) => {
+            console.log("Data from API:", res.data);
+            setProgresses(res.data);
+        })
+            .catch((error) => {
+                console.log(error.response.data);
+            })
+    }
+
+
     useEffect(() => {
         retrieveData()
+        retrieveProgress()
     }, [])
 
     const enrolledCourses = filteredCourses.filter(course => user.enrolledCourse.includes(course.courseId));
 
     const renderCourses = enrolledCourses.map((course, index) => {
 
-        const courseProgress = progress.find(item => {
-            return (
-                item.courseId == course.courseId &&
-                item.students.some(student => student.learnerId === user._id)
-            )
-        })
+        const courseProgress = progresses?.courses.find((data: any) => data.courseId === course.courseId)
+
         return (
             <MyCourseCard key={index} course={course} courseProgress={courseProgress} />
         )

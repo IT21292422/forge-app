@@ -1,5 +1,4 @@
 "use client"
-import { useUserStore } from '@/app/stores/user.store';
 import axios from 'axios';
 import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
@@ -41,45 +40,45 @@ interface Course {
 export default function page({ params }: any) {
     const { courseId } = params
     const [course, setCourse] = useState<Course>()
+    const [progress, setProgress] = useState<any>(0)
+    const [chaptersCompleted, setChaptersCompleted] = useState<any>([])
     const [instructor, setInstructor] = useState<Instructor>()
     const [isLoading, setIsLoading] = useState(true);
     const modalRef = useRef<HTMLDialogElement | null>(null)
     const router = useRouter()
 
-    const data = useUserStore(state => state.user)
-    console.log(data);
-    const userId = "663f420981c794b74836631a"
+    // const data = useUserStore(state => state.user)
+    // console.log(data);
 
-    const retrieveData = () => {
-        axios.get(`http://localhost:3005/learner/${courseId}`).then((res) => {
+    const user = {
+        _id: "663f420981c794b74836631a",
+        enrolledCourse: ["C201", "C103"]
+    }
+
+    const retrieveData = async () => {
+        await axios.get(`http://localhost:3005/learner/${courseId}`).then((res) => {
             setCourse(res.data);
             setIsLoading(false);
         })
             .catch((error) => {
-                console.log(error.response.data);
+                console.log("Error retrieving course data: ", error);
             })
     }
 
-    const retrieveInstructor = () => {
+    const retrieveInstructor = async () => {
         if (course && course.instructorId) {
-            axios
+            await axios
                 .get(`http://localhost:3005/learner/getInstructor/${course.instructorId}`)
                 .then((res) => {
                     setInstructor(res.data);
                 })
                 .catch((error) => {
-                    console.log(error.response.data);
+                    console.log("Error retrieving instructor data: ", error);
                 });
         } else {
             console.log('course or instructorId is undefined');
         }
     }
-
-    retrieveInstructor();
-
-    useEffect(() => {
-        retrieveData()
-    }, [])
 
     const openModal = () => {
         if (modalRef.current) {
@@ -93,15 +92,54 @@ export default function page({ params }: any) {
         }
     }
 
-    const handleUnenroll = () => {
-        axios.put(`http://localhost:3005/learner/${userId}/unenrollcourse/${courseId}`).then(() => {
-            router.push('/learner/mycourse');
+    const handleUnenroll = async () => {
+        await axios.put(`http://localhost:3005/learner/${user._id}/unenrollcourse/${courseId}`).then(() => {
+            //router.push('/learner/mycourse');
             closeModal();
         })
             .catch((error) => {
-                console.log(error.response.data);
+                console.log("Error unenrolling from course: ", error);
             })
     }
+
+    const retrieveProgress = async () => {
+        await axios.get(`http://localhost:3005/learner/getprogress/${user._id}`).then((res) => {
+            const data = res.data
+            const courseProgress = data.courses?.find((item: any) => item.courseId === course?.courseId)
+            setChaptersCompleted(courseProgress.chaptersCompleted);
+            setProgress(courseProgress.progress);
+        })
+            .catch((error) => {
+                console.log("Error retrieving progress: ", error);
+            })
+    }
+
+    const handleCheck = (chapterName: string) => {
+        const newChaptersCompleted = [...chaptersCompleted]
+        newChaptersCompleted.push(chapterName)
+        const updatedProgress = (newChaptersCompleted.length / (course?.chapters.length || 1)) * 100
+        setProgress(updatedProgress)
+        console.log(updatedProgress)
+        console.log(newChaptersCompleted)
+        const prog = {
+            courseId: course?.courseId,
+            chaptersCompleted: newChaptersCompleted,
+            progress: updatedProgress
+        }
+        axios.put(`http://localhost:3005/learner/updateprogress/${user._id}`, prog).then(() => {
+            console.log("Successfully Updated Progress")
+            console.log(prog)
+        })
+            .catch((error) => {
+                console.log(error.response.data)
+            })
+    }
+
+    useEffect(() => {
+        retrieveInstructor();
+        retrieveData();
+        retrieveProgress();
+    }, [course])
 
     const renderTags = course?.tags.map((tags: any) => {
         return (
@@ -115,10 +153,10 @@ export default function page({ params }: any) {
         )
     })
 
-    const renderChapters = course?.chapters.map((chapter) => {
+    const renderChapters = course?.chapters.map((chapter, index) => {
         return (
             <>
-                <div className="flex m-10 justify-center">
+                <div key={index} className="flex m-10 justify-center">
                     <div className="collapse collapse-plus bg-base-200 lg:w-[80%]">
                         <input type="radio" name="my-accordion-3" />
                         <div className="collapse-title flex justify-between text-sm md:text-xl font-medium">
@@ -126,6 +164,12 @@ export default function page({ params }: any) {
                             <h1>{chapter.videoLength}</h1>
                         </div>
                         <div className="collapse-content">
+                            <div className="flex justify-end">
+                                {chaptersCompleted.includes(chapter.chapterTitle) ?
+                                    <p className="badge badge-success text-white badge-lg p-4">Completed</p>
+                                    : <input type="checkbox" className="checkbox checkbox-lg checkbox-success" onChange={() => handleCheck(chapter.chapterTitle)} />
+                                }
+                            </div>
                             <div className="flex flex-col gap-5 mb-10">
                                 <div className="flex gap-5">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -144,7 +188,7 @@ export default function page({ params }: any) {
                                     <h1>Video</h1>
                                 </div>
                                 <CldVideoPlayer
-                                    id={chapter.chapterId}
+                                    id={index.toString()}
                                     width="1920"
                                     height="1080"
                                     src={chapter.videoUrl}
@@ -187,13 +231,22 @@ export default function page({ params }: any) {
                         <div className="flex items-center gap-10">
                             <div className="avatar placeholder">
                                 <div className="bg-neutral text-neutral-content rounded-full w-16">
-                                    <span className="text-3xl">{instructor?.firstName.slice(0, 1)}</span>
+                                    <span className="text-3xl">{instructor?.firstName?.slice(0, 1)}</span>
                                 </div>
                             </div>
                             <div className="flex-col -ml-4">
                                 <p className="text-sm font-bold text-main">{instructor?.firstName} {instructor?.lastName}</p>
                                 <p className="text-sm font-bold text-gray-500"><a href={`mailto:${instructor?.email}`} className="hover:btn-link">{instructor?.email}</a></p>
                             </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div
+                            className="radial-progress text-primary"
+                            style={{ '--value': `${progress}`, "--size": "4rem" } as any}
+                            role="progressbar"
+                        >
+                            {Math.round(progress)}%
                         </div>
                     </div>
                     <div>
