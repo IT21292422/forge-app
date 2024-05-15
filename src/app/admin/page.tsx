@@ -37,7 +37,7 @@ const AdminConsole = (props: Props) => {
     }
 
     if (isError) {
-        return <div className="flex justify-center ">Error: Could not connect to server</div>
+        return <div className="flex justify-center ">Error: Could not connect to Courses server</div>
     }
 
     if (!data || data === undefined || data.length === 0) {

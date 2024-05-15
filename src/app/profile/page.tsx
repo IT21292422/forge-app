@@ -12,11 +12,12 @@ const UserProfile = (props: Props) => {
     const [userData, setUserData] = useState<LoginInstructorResponseDTO | LoginStudentResponseDTO | null>();
 
     const data = useUserStore(state => state.user)
+    const logout = useUserStore(state => state.logout)
 
 
     const handleLogout = async () => {
         localStorage.removeItem('token');
-        useUserStore.getState().logout();
+        logout()
         router.push('/learner')
     }
 

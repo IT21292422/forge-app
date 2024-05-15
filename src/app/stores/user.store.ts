@@ -16,10 +16,14 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       user: null,
       setUser: (user) => set({ user }),
-      logout: () => set({ user: null }),
+      logout: () => {
+        set({ user: null });
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      },
     }),
     {
-      name: "user-storage",
+      name: "user",
     },
   ),
 );

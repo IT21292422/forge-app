@@ -1,3 +1,5 @@
+"use client";
+
 import { X } from "lucide-react";
 import Image from 'next/image';
 import { Dispatch, SetStateAction } from "react";
@@ -13,38 +15,67 @@ type Props = {
     setOpenSignUpModal: Dispatch<SetStateAction<boolean>>;
 };
 const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
-    const { register, handleSubmit, formState } = useForm<LoginSchema>({
+    const { register, handleSubmit, formState, reset, setValue, trigger, setError, clearErrors } = useForm<LoginSchema>({
         defaultValues: {
             email: "",
             password: "",
             role: "",
+            serverError: "",
         },
     });
 
-    const { data, mutateAsync, isPending } = useLoginUser()
+    const { data, mutateAsync, isPending, reset: resetMutation, } = useLoginUser()
 
     // useEffect(() => {
-    //     console.log('Data from mutation', data);
-    //     if (data) {
-    //         if (data.token) {
-    //             localStorage.setItem('token', data.token)
-    //         }
-
-    //     }
-    // }, [data])
+    //     // reset()
+    // }, [])
 
 
-    const onSubmit = async (formData: LoginSchema) => {
-        console.log(formData);
-        mutateAsync(formData);
-        if (data) {
-            setOpenModal(false);
+    const onSubmit = async (formData: LoginSchema, e?: React.BaseSyntheticEvent) => {
+        try {
+
+            e?.preventDefault();
+            console.log('Data from mutation ~ outside if', data);
+            console.log('FORM DATA', formData);
+            await mutateAsync(formData);
             localStorage.removeItem('token')
-            console.log('Data from mutation', data);
-            useUserStore.getState().setUser(data);
-            localStorage.setItem('token', data.token)
+
+            // resetMutation()
+            if (data) {
+
+                if (data.statusCode === 401) {
+                    setError('serverError', { message: `${data.message}`, type: 'server' })
+                    console.log('Inavlid password');
+                    // setValue('password', '')
+                    // setValue('email', '')
+                    return
+                }
+                else if (data.statusCode === 404) {
+                    setError('serverError', { message: `${data.message}`, type: 'server' })
+                    console.log('Inavlid email ');
+                    // setValue('password', '')
+                    // setValue('email', '')
+                    return
+                }
+
+                setOpenModal(false);
+                localStorage.removeItem('token')
+                console.log('Data from mutation ~ inside if', data);
+                useUserStore.getState().setUser(data);
+                localStorage.setItem('token', data.token)
+                // reset()
+
+            }
+            // setOpenModal(false);
+            reset()
+        } catch (error) {
+            console.log('Onsubmit Error', error);
+
         }
     };
+
+    // console.log('Form errors', formState.errors);
+
 
     return (
         <dialog id="my_modal_1" className="modal p-5" open={openModal}>
@@ -59,15 +90,13 @@ const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
                 <p className="py-4">Let&apos;s get back to where you left</p>
                 <div className="flex  modal-action">
                     <Image className="lg:flex md:flex flex-1 lg:items-start lg:justify-start hidden" src={loginSvg} alt="login" width={130} height={130} />
-                    <form method="dialog" onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-                        {/* {data?.message ?
-                            <label
-                                className="block border p-3 text-red-500 text-sm font-bold mb-2"
+                    <form method="dialog" onSubmit={(e) => {
+                        clearErrors()
+                        handleSubmit(onSubmit)(e)
+                    }} className="flex flex-col">
+                        {formState.errors.serverError ?
+                            <p className="text-red-500 block border p-3">{formState.errors.serverError?.message}</p> : null}
 
-                            >
-                                {data.message}
-                            </label>
-                            : null} */}
 
                         <div className="flex flex-col  mb-4">
                             <label
@@ -145,20 +174,18 @@ const LoginModal = ({ openModal, setOpenModal, setOpenSignUpModal }: Props) => {
                         </div>
                         {/* if there is a button in form, it will close the modal */}
                         <div className="flex flex-1 my-5 justify-end">
-                            {!isPending ?
-                                <button
+                            <button
 
-                                    className=" px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
-                                    type="submit"
-                                >
-                                    Login
-                                </button> : null}
-                            {isPending ?
+                                className=" px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
+                            >
+                                Login
+                            </button>
+                            {/* {isPending ?
                                 <button
 
                                     className="loading loading-spinner px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
                                     type="submit"
-                                /> : null}
+                                /> : null} */}
 
                         </div>
                     </form>

@@ -2,6 +2,7 @@ export interface LoginSchema {
   email: string;
   password: string;
   role: "student" | "instructor" | "admin" | "";
+  serverError?: string;
 }
 
 export interface SignUpSchema {
