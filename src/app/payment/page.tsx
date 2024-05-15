@@ -6,28 +6,29 @@ import { useEffect, useState } from 'react';
 
 export default function Checkout() {
   const [paymentWindow, setPaymentWindow] = useState<Window | null>(null);
-  const [courseId, setCourseId] = useState('oc759a67c');
+  const [courseId, setCourseId] = useState<String | null>('oc759a67c');
   const searchParams = useSearchParams();
   const cId = searchParams.get('cId');
   const userId = searchParams.get('userId');
 
   const payment = {
-    learnerId: "user123",
-    courseId: "course456",
-    orderId: "order789",
+    learnerId: userId,
+    courseId: cId,
+    orderId: `${cId}_${new Date().getTime()}`,
     amount: 200.00,
     dateTime: Date.now()
   };
 
   useEffect(() => {
+    setCourseId(cId)
   }, [paymentWindow]);
 
   const proceedPayment = () => {
     axios.post('http://localhost:3005/payment/add', payment).then((result) => {
       alert('added')
     })
-    window.open(`https://sandbox.payhere.lk/pay/${courseId}`, '_blank');
-    window.location.href = 'http://localhost:3000/learner';
+    window.open(`https://sandbox.payhere.lk/pay/${cId}`, '_blank');
+    window.location.href = `localhost:3005/learner/${userId}/enrollcourse/${cId}`;
   };
 
   const cancelePayment = () => {
