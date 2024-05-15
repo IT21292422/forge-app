@@ -1,6 +1,7 @@
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import "./globals.css";
 import { ReactQueryClientProvider } from "./util/providers";
@@ -24,6 +25,7 @@ export default function RootLayout({
           <Navbar />
           <main className="my-5 bg-base-100">{children}</main>
           <ReactQueryDevtools initialIsOpen={true} />
+          <Footer />
         </body>
       </html>
     </ReactQueryClientProvider>
