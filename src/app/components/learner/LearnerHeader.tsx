@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 export default function LearnerHeader() {
     return (
@@ -8,7 +9,7 @@ export default function LearnerHeader() {
                 <h1 className="text-5xl font-semibold leading-[60px] text-main">Potential</h1>
                 <h1 className="text-5xl font-semibold leading-[60px]">Learn Anything,</h1>
                 <h1 className="text-5xl font-semibold leading-[60px] text-main">Anytime!</h1>
-                <button className="btn bg-main text-white mt-5 ">Start Learning</button>
+                <button className="btn bg-main text-white mt-5 "><Link href="/learner/allcourse">Start Learning</Link></button>
             </div>
         </div>
     )

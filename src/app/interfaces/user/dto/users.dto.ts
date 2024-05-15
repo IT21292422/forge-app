@@ -1,18 +1,17 @@
-export interface CreateLearnerRequestDTO {
+export interface CreateStudentRequestDTO {
   firstName: string;
   lastName: string;
-  role: "instructor" | "user";
   email: string;
-  password: string;
+  role: string;
   year: string;
-  enrolledCourse: string[];
+  password: string;
+  enrolledCourses: string[];
 }
 export interface CreateInstructorRequestDTO {
   firstName: string;
   lastName: string;
-  role: "instructor" | "user";
   email: string;
+  role: string;
   password: string;
-  year: string;
   publishedCourses: string[];
 }
