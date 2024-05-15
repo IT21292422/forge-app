@@ -1,4 +1,5 @@
 "use client"
+import { useUserStore } from "@/app/stores/user.store";
 import axios from "axios";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
@@ -33,6 +34,9 @@ export default function page({ params }: any) {
 
     const [isLoading, setIsLoading] = useState(true);
 
+    const user = useUserStore(state => state.user)
+    console.log(user)
+
     const retrieveData = () => {
         axios.get(`http://localhost:3005/learner/${courseId}`).then((res) => {
             setCourse(res.data);
@@ -60,7 +64,7 @@ export default function page({ params }: any) {
     })
 
     const processPayment = () => {
-        router.push(`/payment?cId=${courseId}&userId=123`)
+        router.push(`/payment?cId=${courseId}&userId=${user?._id}`)
     }
 
     return (

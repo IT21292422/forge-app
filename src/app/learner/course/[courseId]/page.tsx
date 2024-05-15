@@ -1,4 +1,5 @@
 "use client"
+import { useUserStore } from '@/app/stores/user.store';
 import axios from 'axios';
 import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
@@ -47,13 +48,7 @@ export default function page({ params }: any) {
     const modalRef = useRef<HTMLDialogElement | null>(null)
     const router = useRouter()
 
-    // const data = useUserStore(state => state.user)
-    // console.log(data);
-
-    const user = {
-        _id: "663f420981c794b74836631a",
-        enrolledCourse: ["C201", "C103"]
-    }
+    const user = useUserStore(state => state.user)
 
     const retrieveData = async () => {
         await axios.get(`http://localhost:3005/learner/${courseId}`).then((res) => {
@@ -93,8 +88,8 @@ export default function page({ params }: any) {
     }
 
     const handleUnenroll = async () => {
-        await axios.put(`http://localhost:3005/learner/${user._id}/unenrollcourse/${courseId}`).then(() => {
-            //router.push('/learner/mycourse');
+        await axios.put(`http://localhost:3005/learner/${user?._id}/unenrollcourse/${courseId}`).then(() => {
+            router.push('/learner/mycourse');
             closeModal();
         })
             .catch((error) => {
@@ -103,7 +98,7 @@ export default function page({ params }: any) {
     }
 
     const retrieveProgress = async () => {
-        await axios.get(`http://localhost:3005/learner/getprogress/${user._id}`).then((res) => {
+        await axios.get(`http://localhost:3005/learner/getprogress/${user?._id}`).then((res) => {
             const data = res.data
             const courseProgress = data.courses?.find((item: any) => item.courseId === course?.courseId)
             setChaptersCompleted(courseProgress.chaptersCompleted);
@@ -126,7 +121,7 @@ export default function page({ params }: any) {
             chaptersCompleted: newChaptersCompleted,
             progress: updatedProgress
         }
-        axios.put(`http://localhost:3005/learner/updateprogress/${user._id}`, prog).then(() => {
+        axios.put(`http://localhost:3005/learner/updateprogress/${user?._id}`, prog).then(() => {
             console.log("Successfully Updated Progress")
             console.log(prog)
         })
@@ -200,7 +195,13 @@ export default function page({ params }: any) {
             </>
         )
     })
-
+    if (!user) {
+        return <div className="flex justify-center ">
+            <div className="flex flex-col h-[50vh] justify-center items-center text-center">
+                <p className="text-xl">You need to be logged in to view this content</p>
+            </div>
+        </div>
+    }
     return (
         <>
             <div className="bg-[#A2D4F1] text-black -mt-6 -mb-6 lg:h-screen">

@@ -1,5 +1,26 @@
+"use client"
+import { LoginStudentResponseDTO } from '@/app/interfaces/auth/auth.interface';
+import { useUserStore } from '@/app/stores/user.store';
+import axios from 'axios';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 export default function AllCourseCard({ course }: any) {
+    const [userdata, setUserData] = useState<LoginStudentResponseDTO>();
+    const user = useUserStore(state => state.user)
+
+    const retrieveUser = () => {
+        axios.get(`http://localhost:3005/learner/getStudent/${user?._id}`).then((res) => {
+            setUserData(res.data);
+            console.log(userdata)
+        })
+            .catch((error) => {
+                console.log(error.response.data);
+            })
+    }
+
+    useEffect(() => {
+        retrieveUser()
+    }, [userdata])
 
     const renderTags = course.tags.slice(0, 5).map((tags: any, index: number) => {
         return (
@@ -23,7 +44,11 @@ export default function AllCourseCard({ course }: any) {
                     <div>
                         <p className="text-2xl font-bold text-red-500">$<span>{course.price}</span></p>
                     </div>
-                    <button className="btn btn-primary"><Link href="../learner/enrollcourse/[courseId]" as={`../learner/enrollcourse/${course.courseId}`}>Enroll Now</Link></button>
+                    {userdata?.enrolledCourses.includes(course.courseId) ?
+                        <button className="btn btn-primary"><Link href="../learner/course/[courseId]" as={`../learner/course/${course.courseId}`}>View</Link></button>
+                        :
+                        <button className="btn btn-primary"><Link href="../learner/enrollcourse/[courseId]" as={`../learner/enrollcourse/${course.courseId}`}>Enroll Now</Link></button>
+                    }
                 </div>
             </div>
         </div>

@@ -1,13 +1,9 @@
 "use client"
 import MyCourseCard from '@/app/components/learner/MyCourseCard';
+import { LoginStudentResponseDTO } from '@/app/interfaces/auth/auth.interface';
 import { useUserStore } from '@/app/stores/user.store';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-
-const user = {
-    _id: "663f420981c794b74836631a",
-    enrolledCourse: ["C201", "C103"]
-}
 
 interface Course {
     courseId: string;
@@ -33,13 +29,12 @@ interface Course {
 
 export default function MyCourse() {
     const [courses, setCourses] = useState<Course[]>([]);
+    const [userdata, setUserData] = useState<LoginStudentResponseDTO>();
     const [progresses, setProgresses] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     const [Keyword, setKeyword] = useState('')
 
-    const data = useUserStore(state => state.user)
-    console.log(data);
-    console.log(data?._id);
+    const user = useUserStore(state => state.user)
 
     const filteredCourses = courses.filter((course) => {
         const courseTitle = course.courseTitle.toLowerCase()
@@ -63,8 +58,18 @@ export default function MyCourse() {
             })
     }
 
+    const retrieveUser = () => {
+        axios.get(`http://localhost:3005/learner/getStudent/${user?._id}`).then((res) => {
+            setUserData(res.data);
+            console.log(userdata)
+        })
+            .catch((error) => {
+                console.log(error.response.data);
+            })
+    }
+
     const retrieveProgress = () => {
-        axios.get(`http://localhost:3005/learner/getprogress/${user._id}`).then((res) => {
+        axios.get(`http://localhost:3005/learner/getprogress/${user?._id}`).then((res) => {
             console.log("Data from API:", res.data);
             setProgresses(res.data);
         })
@@ -75,20 +80,36 @@ export default function MyCourse() {
 
 
     useEffect(() => {
+        retrieveUser()
         retrieveData()
         retrieveProgress()
-    }, [])
+    }, [userdata])
 
-    const enrolledCourses = filteredCourses.filter(course => user.enrolledCourse.includes(course.courseId));
 
-    const renderCourses = enrolledCourses.map((course, index) => {
+    const enrolledCourse = filteredCourses.filter(course => {
+        if (userdata && 'enrolledCourses' in userdata) {
+            return userdata.enrolledCourses.includes(course.courseId);
+        }
+        return false;
+    })
+    console.log(user)
+    const renderCourses = enrolledCourse.map((course, index) => {
 
-        const courseProgress = progresses?.courses.find((data: any) => data.courseId === course.courseId)
+        const courseProgress = progresses?.courses?.find((data: any) => data.courseId === course.courseId)
 
         return (
             <MyCourseCard key={index} course={course} courseProgress={courseProgress} />
         )
     })
+
+    if (!user) {
+        return <div className="flex justify-center ">
+            <div className="flex flex-col h-[50vh] justify-center items-center text-center">
+                <p className="text-xl">You need to be logged in to view this content</p>
+            </div>
+        </div>
+    }
+
     return (
         <>
             <div className="bg-main flex flex-col">

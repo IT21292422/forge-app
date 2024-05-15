@@ -1,8 +1,10 @@
 "use client"
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Testimonial from "../components/Testimonial";
 import AllCourseCard from "../components/learner/AllCourseCard";
 import LearnerHeader from "../components/learner/LearnerHeader";
+import { useUserStore } from "../stores/user.store";
 
 interface Course {
   courseId: string;
@@ -31,6 +33,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [Keyword, setKeyword] = useState('')
 
+  const user = useUserStore(state => state.user)
+
   const filteredCourses = courses.filter((course) => {
     const courseTitle = course.courseTitle.toLowerCase()
     const categories = course.categories.toLowerCase()
@@ -56,7 +60,7 @@ export default function Home() {
     retrieveData()
   }, [])
 
-  const renderCourses = filteredCourses.map((course, index) => {
+  const renderCourses = filteredCourses.slice(-6).map((course, index) => {
     return (
       <AllCourseCard key={index} course={course} />
     )
@@ -66,6 +70,7 @@ export default function Home() {
   return (
     <>
       <LearnerHeader />
+      <Testimonial />
       <div className="bg-main flex flex-col mt-10">
         <h1 className="text-4xl text-center text-white pt-10 font-serif">We have got you covered!</h1>
         <div className="flex w-screen justify-center px-16 pb-16 pt-10">
