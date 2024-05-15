@@ -25,7 +25,7 @@ export default function Checkout() {
   useEffect(() => {
     setCourseId(cId)
     const fetchCourse = async () => {
-      axios.get(`http://localhost:3005/learner/${courseId}`).then((res) => {
+      axios.get(`http://localhost:3005/learner/${cId}`).then((res) => {
         setCourse(res.data);
         setIsLoading(false);
       })
@@ -76,7 +76,7 @@ export default function Checkout() {
         <div className="card-body">
           <h2 className="card-title">{course?.courseTitle}</h2>
           <p>{course?.description}</p>
-          <h2 className="card-title text-blue-600">{course?.price}</h2>
+          <h2 className="card-title text-blue-600">${course?.price}</h2>
           <div className="card-actions justify-end">
             <button onClick={cancelePayment} className='btn btn-error'>Cancel</button>
             <button onClick={proceedPayment} className='btn btn-primary'>Pay</button>
