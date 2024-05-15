@@ -3,9 +3,8 @@ import Link from "next/link"
 export default function MyCourseCard({ course, courseProgress }: any) {
 
     var newProgress = 0
-    console.log(courseProgress)
     if (courseProgress) {
-        newProgress = courseProgress.students[0].progress
+        newProgress = courseProgress.progress
     }
 
     const renderTags = course.tags.slice(0, 5).map((tags: any) => {
@@ -33,7 +32,7 @@ export default function MyCourseCard({ course, courseProgress }: any) {
                             style={{ '--value': `${newProgress}`, "--size": "4rem" } as any}
                             role="progressbar"
                         >
-                            {newProgress}%
+                            {Math.round(newProgress)}%
                         </div>
                     </div>
                     <button className="btn btn-primary"><Link href="../learner/course/[courseId]" as={`../learner/course/${course.courseId}`}>View</Link></button>
