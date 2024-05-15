@@ -28,3 +28,25 @@ export type FetchAllCOurseResponeDTO =
       statusCode: number;
       message: string;
     };
+
+export interface Course {
+  courseId: string;
+  courseTitle: string;
+  publishedDate: any;
+  imgUrl: string;
+  price: number;
+  categories: string;
+  tags: string[];
+  description: string;
+  WhatWillLearn: string[];
+  isApproved: boolean;
+  chapters: [
+    {
+      chapterId: string;
+      chapterTitle: string;
+      pdfUrl: string;
+      videoUrl: string;
+      videoLength: string;
+    },
+  ];
+}

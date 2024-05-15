@@ -3,10 +3,13 @@
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Course } from '../interfaces/course/course.dto';
 
 export default function Checkout() {
   const [paymentWindow, setPaymentWindow] = useState<Window | null>(null);
   const [courseId, setCourseId] = useState<String | null>('oc759a67c');
+  const [course, setCourse] = useState<Course>()
+  const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
   const cId = searchParams.get('cId');
   const userId = searchParams.get('userId');
@@ -21,6 +24,16 @@ export default function Checkout() {
 
   useEffect(() => {
     setCourseId(cId)
+    const fetchCourse = async () => {
+      axios.get(`http://localhost:3005/learner/${courseId}`).then((res) => {
+        setCourse(res.data);
+        setIsLoading(false);
+      })
+        .catch((error) => {
+          console.log(error.response.data);
+        })
+    }
+    fetchCourse()
   }, [paymentWindow]);
 
   const proceedPayment = () => {
@@ -35,6 +48,13 @@ export default function Checkout() {
     window.history.go(-1)
   }
 
+  if (isLoading) return (
+    <>
+      <div className='flex justify-center items-center'>
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    </>
+  )
   return (
     <div className='flex justify-center items-center'>
       <div>
@@ -52,10 +72,11 @@ export default function Checkout() {
         </dialog>
       </div>
       <div className="card w-96 bg-base-100 shadow-xl">
-        <figure><img src="https://res.cloudinary.com/dhzgmok7k/image/upload/v1714995565/1695299108743_iyb1h1.png" alt="Shoes" /></figure>
+        <figure><img src={course?.imgUrl} alt="CourseImg" /></figure>
         <div className="card-body">
-          <h2 className="card-title">C For beginners</h2>
-          <p>From fundamental to expert level , all aspects of programming styles are covered in single course</p>
+          <h2 className="card-title">{course?.courseTitle}</h2>
+          <p>{course?.description}</p>
+          <h2 className="card-title text-blue-600">{course?.price}</h2>
           <div className="card-actions justify-end">
             <button onClick={cancelePayment} className='btn btn-error'>Cancel</button>
             <button onClick={proceedPayment} className='btn btn-primary'>Pay</button>
