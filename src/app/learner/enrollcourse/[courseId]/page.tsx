@@ -1,4 +1,5 @@
 "use client"
+import image from "../../../../../public/enroll-hero.jpeg";
 import { useUserStore } from "@/app/stores/user.store";
 import axios from "axios";
 import { useRouter } from 'next/navigation';
